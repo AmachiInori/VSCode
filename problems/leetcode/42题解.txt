@@ -1,0 +1,44 @@
+### 解题思路
+首先发现关于本题的几条线索：
+1. 可以将整个区域分为数个小区域来求算
+2. 决定每个空间水容量的是该区域柱子高度的最大值和次大值（可与最大值相等）
+
+**所以解法就很明确了。**
+分治求解，先找到全局的最大值，分别向两边寻找次大值，找到之后求容量以该次大值为起始继续向两侧重复。
+需要注意的是水容量的算法，非常容易算多或者算少。
+有一个用例是空集，我特判掉了（逃）
+
+### 代码
+
+```cpp
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        if (!height.size()) return 0; //空集特判
+        int loca = 0;
+        for (int i = 0; i < height.size(); i++)
+            if (height[i] > height[loca]) loca = i; //寻找全局最大值的下标
+        return left(height, loca) + right(height, loca);
+    }
+    int left(vector<int>& height, int start){
+        if (start == 0) return 0;
+        int loca = 0;
+        for (int i = start - 1; i >= 0; i--)
+            if (height[i] > height[loca]) loca = i;
+        return calcu(height, loca, start) + left(height, loca);
+    }
+    int right(vector<int>& height, int start){
+        if (start == height.size() - 1) return 0;
+        int loca = height.size() - 1;
+        for (int i = start + 1; i < height.size() - 1; i++)
+            if (height[i] > height[loca]) loca = i;
+        return calcu(height, start, loca) + right(height, loca);
+    }
+    int calcu(vector<int>& height, int start, int final){
+        int res = (height[start] < height[final] ? height[start] : height[final]) * (final - start + 1);
+        for (int i = start; i <= final; i++)
+            res -= height[i] > (height[start] < height[final] ? height[start] : height[final]) ? (height[start] < height[final] ? height[start] : height[final]) : height[i];
+        return res;
+    }
+};
+```
