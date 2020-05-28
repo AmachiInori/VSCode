@@ -12,7 +12,7 @@ using std::string;
 
 template<typename type>
 class listNode
-{
+{ 
 public:
     type data;
     listNode *next;
