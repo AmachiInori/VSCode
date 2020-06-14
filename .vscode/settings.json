@@ -76,6 +76,11 @@
         "shared_mutex": "cpp",
         "thread": "cpp",
         "typeindex": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "ccomplex": "cpp",
+        "ciso646": "cpp",
+        "cerrno": "cpp",
+        "filesystem": "cpp",
+        "locale": "cpp"
     }
 }

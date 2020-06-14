@@ -1,0 +1,19 @@
+hufftree.h
+line 57 : while (que.size() != 1) -> while (que.size() > 1)
+line 62 : huffmanTreeNode node('0', left -> m_freq + right -> m_freq, left, right); -> huffmanTreeNode* node = new huffmanTreeNode('0', left -> m_freq + right -> m_freq, left, right);
+line 63 : que.push(node); -> que.push(*node);
+line 86 - 89 add :             
+            if (_isLeaf(root)) {
+                code = '0';
+                code_table[root -> m_data] = code;
+            }
+line 86 add comment
+
+huffencode.h
+
+
+huffman.h
+line 19 add : if (m_freq == n.m_freq) return ch > n.ch;
+line 20 : return m_freq < n.m_freq; -> return m_freq > n.m_freq;
+
+59 62 ces
