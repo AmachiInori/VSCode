@@ -35,6 +35,6 @@ public:
 int main() {
     Solution s;
     vector<int> test = {2,3,6,7};
-    s.combinationSum(test, 7);
+    s.combinationSum2(test, 7);
     return 0;
 }

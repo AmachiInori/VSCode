@@ -7,7 +7,7 @@ using namespace std;
 
 class treeNode {
 private:
-    pair<uint8_t, int> value;  
+    pair<uint8_t, int> value;
     treeNode* left;
     treeNode* right;
 public:
