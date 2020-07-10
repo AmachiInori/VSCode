@@ -19,10 +19,12 @@ private:
     void reserve(word w) { hash.insert({w.lexeme, w}); }
     bool isDigit(char c) { return (c >= '0' && c <= '9'); }
     bool isLetter(char c) { return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_'); }
-    bool isOperator(char c) { return (c == '=' || c == '>' || c == '<' ||
-        c == '+' || c == '-' || c == '*' || c == '/' || c == '!'); }
+    bool isOperator(char c) { return (c == '=' || c == '>' || c == '<' || c == '+' || 
+        c == '-' || c == '*' || c == '/' || c == '!'); }
 public:
-    lexer() { //预留字构造
+    lexer(string fileName) : inFileName(fileName) { //预留字构造
+        hash = *new unordered_map<string, token>;
+        res = *new vector<token>;
         reserve(word(TRUE, "true"));
         reserve(word(FALSE, "false"));
     }

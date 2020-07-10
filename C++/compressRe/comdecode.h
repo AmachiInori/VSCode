@@ -83,7 +83,6 @@ private:
         }
         tar.close();
     }
-
 public:
     decode(string fileName) : oriFileName(fileName) {}
     void doDecode() {

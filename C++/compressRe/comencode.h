@@ -95,10 +95,8 @@ private:
         Ofs.close();
         return 0;
     }
-
-
 public:
-    encode(string origin, string target) : originFilename(origin), targetFilename(target){}
+    encode(const string origin, string target) : originFilename(origin), targetFilename(target) {}
     void doEncode() {
         string dictName = targetFilename + ".dict";
         vector<bool> temp;

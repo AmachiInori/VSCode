@@ -2,7 +2,7 @@
 using namespace std;
 
 int main() {
-    int* temp;
-    *(temp) = 100;
-    return 0;
+    int testInt;
+    int* intPointer = &testInt;
+    cout << intPointer + 1 << "----" << &intPointer[1] << endl;
 }
