@@ -14,7 +14,6 @@ public:
                 for (tempR = right - 1; tempR > left; tempR--)
                     if (s[tempR] == it.first) break;
                 return max(runner(s, left, tempR), runner(s, tempL, right));
-                break;
             }
         }
         return right - left + 1;

@@ -14,19 +14,19 @@ using std::string;
 class token {
 public:
     const int tag;
-    token(int t) : tag(t){};
+    explicit token(int t = 0) : tag(t){};
     virtual void print() const { cout << tag << '\t' << "TOKEN" << '\t' << (char)tag << endl; };
 };
 class num : public token { 
 public:
     const int value;
-    num(int v) : value(v), token(NUM){};
+    explicit num(int v) : value(v), token(NUM){};
     void print() const override { cout << tag << '\t' << "INTGE" << '\t' << value << endl; }
 };
 class word : public token {
 public:
     const string lexeme;
-    word(int t, string S) : lexeme(S), token(t){};
+    explicit word(int t, string S) : lexeme(S), token(t){};
     void print() const override { cout << tag << '\t' << "WORDS" << '\t' << lexeme << endl; }
 };
 class floa : public token {
