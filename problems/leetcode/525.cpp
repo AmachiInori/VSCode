@@ -18,7 +18,7 @@ public:
             sum[i + 1] += nums[i] + sum[i];
         for (int i = 0; i < nums.size() + 1; i++)
             for (int j = i; j < nums.size() + 1; j++) 
-                if ((sum[j] - sum[i]) * 2 == j - i) max = max > j - i? max : (j - i);
+                if ((sum[j] - sum[i]) * 2 == j - i) max = max > (j - i) ? max : (j - i);
         return max;
     }
 };

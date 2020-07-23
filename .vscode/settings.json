@@ -82,5 +82,6 @@
         "cerrno": "cpp",
         "filesystem": "cpp",
         "locale": "cpp"
-    }
+    },
+    "python.pythonPath": "C:\\Users\\Zhao Yufeng\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe"
 }

@@ -20,7 +20,7 @@ public:
             if (nums[i] == 1) count++;
             else count--;
             if (hash.find(count) == hash.end()) hash[count] = i;
-            else max = max > i - hash[count] ? max : i - hash[count];
+            else max = (max > i - hash[count]) ? max : (i - hash[count]);
         }
         return max;
     }

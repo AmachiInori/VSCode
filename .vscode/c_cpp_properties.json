@@ -3,7 +3,9 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceRoot}/**"
+                "${workspaceRoot}/**",
+                "D:/mingw64/lib/gcc/x86_64-w64-mingw32/lib",
+                "D:/mingw64/lib/gcc/x86_64-w64-mingw32/lib32"
             ],
             "defines": [
                 "_DEBUG",
@@ -15,12 +17,8 @@
             "browse": {
                 "path": [
                     "${workspaceRoot}",
-                    "D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++",
-                    "D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32",
-                    "D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward",
-                    "D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include",
-                    "D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/tr1",
-                    "D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include"
+                    "D:/mingw64/lib/gcc/x86_64-w64-mingw32/lib",
+                    "D:/mingw64/lib/gcc/x86_64-w64-mingw32/lib32"
                 ],
                 "limitSymbolsToIncludedHeaders": true
             },

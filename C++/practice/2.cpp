@@ -4,6 +4,7 @@
 using namespace std;
 
 int main() {
-    for (register int i = 0; i < times; i++) cout << rand() % max + 1 << endl;
+    int a[10];
+    cout << a[-8];
     return 0;
 }

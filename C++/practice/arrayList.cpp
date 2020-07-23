@@ -13,9 +13,9 @@ public:
     array(int initSize = 10);//标准构造函数
     array(const array<elementType> &theArray);//复制构造函数
     ~array() { delete[] ptl; }//析构函数
-    
+
     int size() const { return usedLength; }//返回大小
-    bool empty() const { return (bool)usedLength; }//判空
+    bool empty() const { return usedLength == 0; }//判空
     bool vaildIndex(int index) const { return index >= 0 && index < usedLength; }//判断索引是否有效 此函数可以声明为protected
     array<elementType>& operator=(const array<elementType> &A);//重载赋值运算符
 
@@ -92,7 +92,7 @@ void array<elementType>::pop(unsigned int const index) {
         usedLength--;
         if (usedLength <= maxLength / 4)
             decreaseSize();
-    }else 
+    }else
         throw("invaild index");
 }
 
@@ -123,7 +123,7 @@ int main() {
     array<int> test;
     for (int i = 0; i < 100; i++){
         test.push(i);
-        std::cout << test[test.size() - 1];
+        std::cout << test[-1];
     }
     std::cout << std::endl;
     test.push(200,2);
