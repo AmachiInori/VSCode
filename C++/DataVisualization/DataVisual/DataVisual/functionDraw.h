@@ -43,16 +43,20 @@ private:
 
 	double(*_functionX)(double);
 	double(*_functionY)(double);
+
 	double functionRunnerX(double x);
 	double functionRunnerY(double x);
 	pair<double, double> preProcessX(double start, double end);
 	pair<double, double> preProcessY(double start, double end);
+
 	void printComment(double sta, double end);
 	void drawUCS(double ZPX, double ZPY);
+
 	int _drawFunction(double start, double end, mode m, preci precision);
 public:
 	explicit funcDraw(double(*function)(double), unsigned int length = 960, unsigned int height = 720);
-	funcDraw(double(*Xfunction)(double), double(*Yfunction)(double), unsigned int length = 960, unsigned int height = 720);
+	explicit funcDraw(double(*Xfunction)(double), double(*Yfunction)(double), unsigned int length = 960, unsigned int height = 720);
+
 	int drawFunction(double start, double end, mode m = lineMode, preci precision = 1);
 	void drawPolarFunction(double start = 0, double end = 6.29, mode m = lineMode, preci precision = 1);
 };
@@ -135,17 +139,18 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 		double xLoca = zeroPointX + tempXValue * unitX;
 		double yLoca = zeroPointY - tempFunctionValue * unitY;
 		if (i == start) {
-			putpixel(xLoca, yLoca, WHITE);
+			putpixel((int)xLoca, (int)yLoca, WHITE);
 			lastPair = { xLoca, yLoca };
 		}
 		else {
-			putpixel(xLoca, yLoca, WHITE);
-			if(m == lineMode) line(xLoca, yLoca, lastPair.first, lastPair.second);
+			putpixel((int)xLoca, (int)yLoca, WHITE);
+			if(m == lineMode) line((int)xLoca, (int)yLoca, (int)lastPair.first, (int)lastPair.second);
 			lastPair = { xLoca, yLoca };
 		}
 	}
 	std::cin.get();
 	closegraph();
+	return 0;
 }
 
 pair<double, double> funcDraw::preProcessX(double start, double end) {
@@ -176,7 +181,7 @@ pair<double, double> funcDraw::preProcessY(double start, double end) {
 	for (double i = start; i < end; i += step) {
 		double temp = functionRunnerY(i);
 		int dealTime = 0;
-		while (temp == BADNUMBER || fabs(temp) > infLimit) {//加一个溢出判断
+		while (temp == BADNUMBER || fabs(temp) > infLimit) {
 			double newPoint = i - infDeal;
 			infDeal *= -2;
 			temp = functionRunnerY(newPoint);
@@ -292,17 +297,17 @@ void funcDraw::printComment(double sta, double end) {
 void funcDraw::drawUCS(double ZPX, double ZPY) {
 	initgraph(windowLength, windowHeight);
 
-	line(left, ZPY, right, ZPY);
-	line(ZPX, up, ZPX, down);
-	line(right, ZPY, right - 10, ZPY + 5);
-	line(right, ZPY, right - 10, ZPY - 5);
-	line(ZPX + 5, up + 10, ZPX, up);
-	line(ZPX - 5, up + 10, ZPX, up);
+	line(left, (int)ZPY, right, (int)ZPY);
+	line((int)ZPX, up, (int)ZPX, down);
+	line(right, (int)ZPY, right - 10, (int)ZPY + 5);
+	line(right, (int)ZPY, right - 10, (int)ZPY - 5);
+	line((int)ZPX + 5, up + 10, (int)ZPX, up);
+	line((int)ZPX - 5, up + 10, (int)ZPX, up);
 
 	settextstyle(25, 0, _T("Consolas"));
-	outtextxy(ZPX + 10, ZPY + 10, "0");
-	outtextxy(right, ZPY, "x");
-	outtextxy(ZPX + 10, up, "y");
+	outtextxy((int)ZPX + 10, (int)ZPY + 10, "0");
+	outtextxy(right, (int)ZPY, "x");
+	outtextxy((int)ZPX + 10, up, "y");
 }
 
 void funcDraw::drawPolarFunction(double start, double end, mode m, preci precision) {
