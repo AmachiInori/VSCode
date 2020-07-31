@@ -26,7 +26,7 @@ protected:
 public:
     chainList();
     chainList(const chainList<elementType> &copyList);
-    chainList(const vector<elementType> &copyVector);
+    explicit chainList(const vector<elementType> &copyVector);
     ~chainList();
     void makeEmpty();
 

@@ -47,7 +47,7 @@ void arrDraw::_drawBar(vector<double> arr) {
 		if (i < arrMin)
 			arrMin = i;
 	}
-	int zeroPoint = (arrMin < 0) ? (int)(arrMax / (arrMax - arrMin) * (down - up) + up) : down;
+	int zeroPoint = (arrMin < 0) ? (int)(arrMax / (arrMax - arrMin) * (down - up) + up) : down;//改算法 全负不支持
 	for (auto &i : arr)
 		i = i / arrMax * (zeroPoint - up);
 

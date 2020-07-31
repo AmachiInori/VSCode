@@ -16,7 +16,7 @@ private:
     TreeNode* _find (TreeNode* r, int target) const;
     TreeNode* _insert(TreeNode* r, int value);
 public:
-    BST() { this->clear(root); }
+    explicit BST() { this->clear(root); }
     TreeNode* find (int target) const { return this->_find(root, target); }
     void insert(int data) { this->_insert(root, data); }
 };

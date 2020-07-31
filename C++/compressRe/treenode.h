@@ -12,9 +12,9 @@ private:
     treeNode* right;
 public:
     treeNode() : value({0, 0}), left(NULL), right(NULL){}
-    treeNode(pair<uint8_t, int> cfreq) : value(cfreq), left(NULL), right(NULL){}
+    explicit treeNode(pair<uint8_t, int> cfreq) : value(cfreq), left(NULL), right(NULL){}
     treeNode(pair<uint8_t, int> cfreq, treeNode* L, treeNode* R) : value(cfreq), left(L), right(R){}
-    
+
     bool operator< (const treeNode &a) const {
         if (value.second == a.value.second) return value.first > a.value.first;
         else return value.second > a.value.second;

@@ -1,0 +1,21 @@
+﻿生成启动时间为 2020/7/31 14:29:53。
+     1>项目“C:\Users\Zhao Yufeng\Documents\VSCode\C++\DataVisualization\DataVisual\DataVisual\DataVisual.vcxproj”在节点 2 上(Build 个目标)。
+     1>ClCompile:
+         D:\Visual Studio\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Release\\" /Fd"Release\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt "源.cpp"
+         源.cpp
+     1>c:\users\zhao yufeng\documents\vscode\c++\datavisualization\datavisual\datavisual\functionDraw.h(71): warning C4244: “参数”: 从“const double”转换到“int”，可能丢失数据
+     1>c:\users\zhao yufeng\documents\vscode\c++\datavisualization\datavisual\datavisual\functionDraw.h(72): warning C4244: “参数”: 从“const double”转换到“int”，可能丢失数据
+     1>c:\users\zhao yufeng\documents\vscode\c++\datavisualization\datavisual\datavisual\functionDraw.h(88): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+     1>c:\users\zhao yufeng\documents\vscode\c++\datavisualization\datavisual\datavisual\functionDraw.h(92): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+     1>c:\users\zhao yufeng\documents\vscode\c++\datavisualization\datavisual\datavisual\functionDraw.h(93): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+       Link:
+         D:\Visual Studio\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Zhao Yufeng\Documents\VSCode\C++\DataVisualization\DataVisual\Release\DataVisual.exe" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\Zhao Yufeng\Documents\VSCode\C++\DataVisualization\DataVisual\Release\DataVisual.pdb" /OPT:REF /OPT:ICF /LTCG:incremental /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Zhao Yufeng\Documents\VSCode\C++\DataVisualization\DataVisual\Release\DataVisual.lib" /MACHINE:X86 /SAFESEH "Release\源.obj"
+         正在生成代码
+         All 15 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+         已完成代码的生成
+         DataVisual.vcxproj -> C:\Users\Zhao Yufeng\Documents\VSCode\C++\DataVisualization\DataVisual\Release\DataVisual.exe
+     1>已完成生成项目“C:\Users\Zhao Yufeng\Documents\VSCode\C++\DataVisualization\DataVisual\DataVisual\DataVisual.vcxproj”(Build 个目标)的操作。
+
+已成功生成。
+
+已用时间 00:00:01.52

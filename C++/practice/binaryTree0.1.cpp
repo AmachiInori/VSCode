@@ -15,7 +15,7 @@ public:
     type data;
     treeNode<type> *left;
     treeNode<type> *right;
-    
+
     treeNode(type x) : data(x);
 };
 
@@ -24,7 +24,7 @@ class binaryTree{
 protected:
     treeNode<type> *root;
 public:
-    binaryTree(type);
+    explicit binaryTree(type);
     ~binaryTree();
 
     treeNode<type> *find(type);
