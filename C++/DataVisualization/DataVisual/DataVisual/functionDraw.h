@@ -1,9 +1,11 @@
 #pragma once
 #include <graphics.h>
+#include <math.h>
 #include <vector>
 #include <string>
 #include <sstream>
 #include <iostream>
+
 #define doubleErr		0.000001
 #define BADNUMBER		INT_MIN
 #define _INVALID_MODE	1
@@ -11,6 +13,7 @@
 #define _OVERFLOW		3
 #define _INVALID_PRE	4
 #define _INDE_OVERFLOW  5
+
 using namespace std;
 
 double defaultFunctionX(double x) { return x; }
@@ -19,6 +22,7 @@ class funcDraw {
 private:
 	typedef unsigned short mode;
 	typedef unsigned short preci;
+	typedef pair<double, double> _minmaxs;
 	typedef pair<unsigned int, double> pointErr;
 	typedef int error;
 	enum functionType { normal, polar, parametric };
@@ -46,19 +50,20 @@ private:
 
 	double functionRunnerX(double x);
 	double functionRunnerY(double x);
-	pair<double, double> preProcessX(double start, double end);
-	pair<double, double> preProcessY(double start, double end);
+	_minmaxs preProcessX(double start, double end);
+	_minmaxs preProcessY(double start, double end);
 
 	void printComment(double sta, double end);
 	void drawUCS(double ZPX, double ZPY);
 
 	int _drawFunction(double start, double end, mode m, preci precision);
+
 public:
 	explicit funcDraw(double(*function)(double), unsigned int length = 960, unsigned int height = 720);
 	explicit funcDraw(double(*Xfunction)(double), double(*Yfunction)(double), unsigned int length = 960, unsigned int height = 720);
 
 	int drawFunction(double start, double end, mode m = lineMode, preci precision = 1);
-	void drawPolarFunction(double start = 0, double end = 6.29, mode m = lineMode, preci precision = 1);
+	int drawPolarFunction(double start = 0, double end = 6.29, mode m = lineMode, preci precision = 1);
 };
 
 funcDraw::funcDraw(double(*function)(double), unsigned int length, unsigned int height)
@@ -85,8 +90,8 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 	if (_type == polar && ((start < -31.3 || end > 31.3))) throw(_INDE_OVERFLOW);
 
 	infDeal = (end - start) / 500;
-	pair<double, double> MaxMinX = this->preProcessX(start, end);
-	pair<double, double> MaxMinY = this->preProcessY(start, end);
+	_minmaxs MaxMinX = this->preProcessX(start, end);
+	_minmaxs MaxMinY = this->preProcessY(start, end);
 	const double step = (double)(MaxMinX.first - MaxMinX.second) * (double)precision / (double)(right - left);
 
 	double tempUnit;
@@ -153,8 +158,8 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 	return 0;
 }
 
-pair<double, double> funcDraw::preProcessX(double start, double end) {
-	double max = INT_MIN, min = INT_MAX;
+funcDraw::_minmaxs funcDraw::preProcessX(double start, double end) {
+	double _max = INT_MIN, _min = INT_MAX;
 	const double step = (end - start) / 20;
 	for (double i = start; i < end; i += step) {
 		double temp = functionRunnerX(i);
@@ -169,13 +174,13 @@ pair<double, double> funcDraw::preProcessX(double start, double end) {
 				throw(err);
 			}
 		}
-		if (temp > max) max = temp;
-		if (temp < min) min = temp;
+		if (temp > _max) _max = temp;
+		if (temp < _min) _min = temp;
 	}
-	return{ max + abs(max * zoomX), min - abs(min * zoomX) };
+	return{ _max + abs(_max * zoomX), _min - abs(_min * zoomX) };
 }
 
-pair<double, double> funcDraw::preProcessY(double start, double end) {
+funcDraw::_minmaxs funcDraw::preProcessY(double start, double end) {
 	double max = INT_MIN, min = INT_MAX;
 	const double step = (end - start) / 20;
 	for (double i = start; i < end; i += step) {
@@ -204,18 +209,12 @@ double funcDraw::functionRunnerX(double x) {
 			res = this->_functionY(x);
 			res = res * cos(x);
 		}
-		catch (const std::exception) {
-			return BADNUMBER;
-		}
+		catch (const std::exception) { return BADNUMBER; }
 		return res;
 	}
 	else {
-		try {
-			res = this->_functionX(x);
-		}
-		catch (const std::exception) {
-			return BADNUMBER;
-		}
+		try { res = this->_functionX(x); }
+		catch (const std::exception) { return BADNUMBER; }
 		if (abs(res - x) > doubleErr) _type = parametric;
 		return res;
 	}
@@ -228,20 +227,47 @@ double funcDraw::functionRunnerY(double x) {
 			res = this->_functionY(x);
 			res = res * sin(x);
 		}
-		catch (const std::exception) {
-			return BADNUMBER;
-		}
+		catch (const std::exception) { return BADNUMBER; }
 		return res;
 	}
 	else {
-		try {
-			res = this->_functionY(x);
-		}
-		catch (const std::exception) {
-			return BADNUMBER;
-		}
+		try { res = this->_functionY(x); }
+		catch (const std::exception) { return BADNUMBER; }
 		return res;
 	}
+}
+
+void funcDraw::drawUCS(double ZPX, double ZPY) {
+	initgraph(windowLength, windowHeight);
+
+	line(left, (int)ZPY, right, (int)ZPY);
+	line((int)ZPX, up, (int)ZPX, down);
+	line(right, (int)ZPY, right - 10, (int)ZPY + 5);
+	line(right, (int)ZPY, right - 10, (int)ZPY - 5);
+	line((int)ZPX + 5, up + 10, (int)ZPX, up);
+	line((int)ZPX - 5, up + 10, (int)ZPX, up);
+
+	settextstyle(25, 0, (LPCTSTR)_T("Consolas"));
+	outtextxy((int)ZPX + 10, (int)ZPY + 10, (LPCTSTR)"0");
+	outtextxy(right, (int)ZPY, (LPCTSTR)"x");
+	outtextxy((int)ZPX + 10, up, (LPCTSTR)"y");
+}
+
+void funcDraw::printComment(double sta, double end) {
+	settextstyle(25, 0, (LPCTSTR)_T("Consolas"));
+	stringstream SS;
+	SS << "function: ";
+	if (_type == normal) SS << "normal y-x x:";
+	else if (_type == polar) SS << "polar r-¦È ¦È:";
+	else if (_type == parametric) SS << "parametric y(t)-x(t) t:";
+	SS << "[" << sta << ", " << end << "]";
+
+	outtextxy(0, 0, (LPCTSTR)SS.str().data());
+}
+
+int funcDraw::drawPolarFunction(double start, double end, mode m, preci precision) {
+	_type = polar;
+	return this->drawFunction(start, end, m, precision);
 }
 
 int funcDraw::drawFunction(double start, double end, mode m, preci precision) {
@@ -274,43 +300,8 @@ int funcDraw::drawFunction(double start, double end, mode m, preci precision) {
 	catch (pointErr &e) {
 		if (e.first == _OVERFLOW) cout << "overflow near x = " << e.second;
 	}
-	catch (const std::exception) {
-		cout << "unknown error";
-	}
+	catch (const std::exception) { cout << "unknown error"; }
 	cout << "\nprocess finished with return value " << exitNumber << ".";
 	std::cin.get();
 	return exitNumber;
-}
-
-void funcDraw::printComment(double sta, double end) {
-	settextstyle(25, 0, _T("Consolas"));
-	stringstream SS;
-	SS << "function: ";
-	if (_type == normal) SS << "normal y-x x:";
-	else if (_type == polar) SS << "polar r-¦È ¦È:";
-	else if (_type == parametric) SS << "parametric y(t)-x(t) t:";
-	SS << "[" << sta << ", " << end << "]";
-
-	outtextxy(0, 0, SS.str().data());
-}
-
-void funcDraw::drawUCS(double ZPX, double ZPY) {
-	initgraph(windowLength, windowHeight);
-
-	line(left, (int)ZPY, right, (int)ZPY);
-	line((int)ZPX, up, (int)ZPX, down);
-	line(right, (int)ZPY, right - 10, (int)ZPY + 5);
-	line(right, (int)ZPY, right - 10, (int)ZPY - 5);
-	line((int)ZPX + 5, up + 10, (int)ZPX, up);
-	line((int)ZPX - 5, up + 10, (int)ZPX, up);
-
-	settextstyle(25, 0, _T("Consolas"));
-	outtextxy((int)ZPX + 10, (int)ZPY + 10, "0");
-	outtextxy(right, (int)ZPY, "x");
-	outtextxy((int)ZPX + 10, up, "y");
-}
-
-void funcDraw::drawPolarFunction(double start, double end, mode m, preci precision) {
-	_type = polar;
-	this->drawFunction(start, end, m, precision);
 }

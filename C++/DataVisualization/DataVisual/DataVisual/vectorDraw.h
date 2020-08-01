@@ -62,7 +62,7 @@ void arrDraw::_drawBar(vector<double> arr) {
 	setfillcolor(WHITE);
 	setlinecolor(WHITE);
 	setlinestyle(PS_SOLID, 1);
-	for (int i = 0; i < arr.size(); i++){
+	for (size_t i = 0; i < arr.size(); i++){
 		int barLeft = left + stepLength * i + spaceLength;
 		int barTop = zeroPoint - arr[i] * rate;
 		int barRight = left + stepLength * (i + 1);
@@ -82,7 +82,7 @@ void arrDraw::_drawBlock(vector<double> arr, int type) {
 	int nowLeft = left + blockLength * 2;
 	int nowRight = left + blockLength * 3;
 	int nowUp = up;
-	
+
 	vector<int> intArr;
 	initgraph(windowLength, windowHeight);
 	setfillcolor(BLACK);
@@ -91,7 +91,7 @@ void arrDraw::_drawBlock(vector<double> arr, int type) {
 		for (auto &i : arr)
 			intArr.push_back((int)i);
 	}
-	for (int i = 0; i < arr.size(); i++){
+	for (size_t i = 0; i < arr.size(); i++){
 		fillrectangle(nowLeft, nowUp + blockHeight * lines, nowRight, nowUp + blockHeight * (lines + 1));
 		int digitY = nowUp + blockHeight * lines + 15;
 		int digitX = nowLeft + 5;
@@ -99,7 +99,7 @@ void arrDraw::_drawBlock(vector<double> arr, int type) {
 		string strTemp = type == INT ? to_string(intArr[i]) : to_string(arr[i]);
 		while (strTemp.size() > 6)
 			strTemp.pop_back();
-		outtextxy(digitX, digitY, strTemp.data());
+		outtextxy(digitX, digitY, (LPCTSTR)strTemp.data());
 		if (nowLeft >= right - blockLength) {
 			nowLeft = left - blockLength;
 			nowRight = left;
@@ -119,7 +119,7 @@ void arrDraw::_drawLine(vector<double> arr) {
 
 void arrDraw::drawBar(vector<int> const &arr) {
 	vector<double> newarr;
-	for (int i = 0; i < arr.size(); i++) {
+	for (size_t i = 0; i < arr.size(); i++) {
 		newarr.push_back((double)arr[i]);
 	}
 	_drawBar(newarr);
@@ -134,7 +134,7 @@ void arrDraw::drawBar(vector<double> const &arr) {
 
 void arrDraw::drawBlock(vector<int> const &arr) {
 	vector<double> newarr;
-	for (int i = 0; i < arr.size(); i++) {
+	for (size_t i = 0; i < arr.size(); i++) {
 		newarr.push_back((double)arr[i]);
 	}
 	_drawBlock(newarr, INT);
