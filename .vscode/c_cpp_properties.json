@@ -1,11 +1,11 @@
 {
     "configurations": [
         {
-            "name": "Win32",
+            "name": "Win32-MinGW",
             "includePath": [
                 "${workspaceRoot}/**",
-                "D:/mingw64/lib/gcc/x86_64-w64-mingw32/lib",
-                "D:/mingw64/lib/gcc/x86_64-w64-mingw32/lib32"
+                "D:/mingw64/include",
+                "D:/SFML-2.5.1/include"
             ],
             "defines": [
                 "_DEBUG",
@@ -22,13 +22,14 @@
                 ],
                 "limitSymbolsToIncludedHeaders": true
             },
-            "compilerPath": "D:/mingw64/bin/gcc.exe",
+            "compilerPath": "D:/mingw64/bin/g++.exe",
             "cStandard": "c11",
             "cppStandard": "c++20",
-            "compilerArgs": []
+            "compilerArgs": [],
+            "configurationProvider": "ms-vscode.cmake-tools"
         },
         {
-            "name": "GCC",
+            "name": "GCC-VisualStudio",
             "includePath": [
                 "${workspaceFolder}/**"
             ],

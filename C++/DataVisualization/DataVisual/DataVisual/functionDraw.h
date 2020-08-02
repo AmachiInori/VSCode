@@ -30,13 +30,15 @@ private:
 	const static long maxDealTime = 255;
 	const static long infLimit = INT_MAX / 2;
 
-	const static mode lineMode	= 0;
-	const static mode pointMode = 1;
-
 	double infDeal = 0.1;
 	double zoomX = 0.3;
 	double zoomY = 0.3;
+	double XMax, XMin, YMax, YMin;
+
+	const static mode lineMode = 0;
+	const static mode pointMode = 1;
 	functionType _type = normal;
+	bool isGrid = false; //未实装
 
 	unsigned int windowHeight = 720;
 	unsigned int windowLength = 960;
@@ -50,11 +52,11 @@ private:
 
 	double functionRunnerX(double x);
 	double functionRunnerY(double x);
-	_minmaxs preProcessX(double start, double end);
-	_minmaxs preProcessY(double start, double end);
+	_minmaxs preProcessX(const double start, const double end);
+	_minmaxs preProcessY(const double start, const double end);
 
-	void printComment(double sta, double end);
-	void drawUCS(double ZPX, double ZPY);
+	void printComment(const double sta, const double end);
+	void drawUCS(const double ZPX, const double ZPY, const double unitX, const double unitY);
 
 	int _drawFunction(double start, double end, mode m, preci precision);
 
@@ -92,31 +94,33 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 	infDeal = (end - start) / 500;
 	_minmaxs MaxMinX = this->preProcessX(start, end);
 	_minmaxs MaxMinY = this->preProcessY(start, end);
-	const double step = (double)(MaxMinX.first - MaxMinX.second) * (double)precision / (double)(right - left);
+	XMax = MaxMinX.first, XMin = MaxMinX.second;
+	YMax = MaxMinY.first, YMin = MaxMinY.second;
+	const double step = (double)(XMax - XMin) * (double)precision / (double)(right - left);
 
 	double tempUnit;
-	if (MaxMinX.second > 0) tempUnit = (right - left) / MaxMinX.first;
-	else if (MaxMinX.first < 0) tempUnit = (right - left) / -MaxMinX.second;
-	else tempUnit = (right - left) / (MaxMinX.first - MaxMinX.second);
+	if (XMin > 0) tempUnit = (right - left) / XMax;
+	else if (XMax < 0) tempUnit = (right - left) / -XMin;
+	else tempUnit = (right - left) / (XMax - XMin);
 	const double unitX = tempUnit;
 
-	if (MaxMinY.second > 0) tempUnit = (down - up) / MaxMinY.first;
-	else if (MaxMinY.first < 0) tempUnit = (down - up) / -MaxMinY.second;
-	else tempUnit = (down - up) / (MaxMinY.first - MaxMinY.second);
+	if (YMin > 0) tempUnit = (down - up) / YMax;
+	else if (YMax < 0) tempUnit = (down - up) / -YMin;
+	else tempUnit = (down - up) / (YMax - YMin);
 	const double unitY = tempUnit;
 
 	double tempZeroPoint;
-	if (MaxMinX.second > 0) tempZeroPoint = left;
-	else if (MaxMinX.first < 0) tempZeroPoint = right;
-	else  tempZeroPoint = -MaxMinX.second * unitX + left;
+	if (XMin > 0) tempZeroPoint = left;
+	else if (XMax < 0) tempZeroPoint = right;
+	else  tempZeroPoint = -XMin * unitX + left;
 	const double zeroPointX = tempZeroPoint;
 
-	if (MaxMinY.first < 0) tempZeroPoint = up;
-	else if (MaxMinY.second > 0) tempZeroPoint = down;
-	else tempZeroPoint = down - (0 - MaxMinY.second) * unitY;
+	if (YMax < 0) tempZeroPoint = up;
+	else if (YMin > 0) tempZeroPoint = down;
+	else tempZeroPoint = down - (0 - YMin) * unitY;
 	const double zeroPointY = tempZeroPoint;
 
-	this->drawUCS(zeroPointX, zeroPointY);
+	this->drawUCS(zeroPointX, zeroPointY, unitX, unitY);
 	this->printComment(start, end);
 
 	pair<double, double> lastPair;
@@ -158,7 +162,7 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 	return 0;
 }
 
-funcDraw::_minmaxs funcDraw::preProcessX(double start, double end) {
+funcDraw::_minmaxs funcDraw::preProcessX(const double start, const double end) {
 	double _max = INT_MIN, _min = INT_MAX;
 	const double step = (end - start) / 20;
 	for (double i = start; i < end; i += step) {
@@ -180,7 +184,7 @@ funcDraw::_minmaxs funcDraw::preProcessX(double start, double end) {
 	return{ _max + abs(_max * zoomX), _min - abs(_min * zoomX) };
 }
 
-funcDraw::_minmaxs funcDraw::preProcessY(double start, double end) {
+funcDraw::_minmaxs funcDraw::preProcessY(const double start, const double end) {
 	double max = INT_MIN, min = INT_MAX;
 	const double step = (end - start) / 20;
 	for (double i = start; i < end; i += step) {
@@ -237,7 +241,7 @@ double funcDraw::functionRunnerY(double x) {
 	}
 }
 
-void funcDraw::drawUCS(double ZPX, double ZPY) {
+void funcDraw::drawUCS(const double ZPX, const double ZPY, const double unitX, const double unitY) {
 	initgraph(windowLength, windowHeight);
 
 	line(left, (int)ZPY, right, (int)ZPY);
@@ -251,9 +255,13 @@ void funcDraw::drawUCS(double ZPX, double ZPY) {
 	outtextxy((int)ZPX + 10, (int)ZPY + 10, (LPCTSTR)"0");
 	outtextxy(right, (int)ZPY, (LPCTSTR)"x");
 	outtextxy((int)ZPX + 10, up, (LPCTSTR)"y");
+
+	auto getUnit = [=](double _max, double _min) {
+		//找坐标轴分度
+	};
 }
 
-void funcDraw::printComment(double sta, double end) {
+void funcDraw::printComment(const double sta, const double end) {
 	settextstyle(25, 0, (LPCTSTR)_T("Consolas"));
 	stringstream SS;
 	SS << "function: ";

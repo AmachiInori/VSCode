@@ -83,5 +83,6 @@
         "filesystem": "cpp",
         "locale": "cpp"
     },
-    "python.pythonPath": "C:\\Users\\Zhao Yufeng\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe"
+    "python.pythonPath": "C:\\Users\\Zhao Yufeng\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe",
+    "cmake.configureOnOpen": false
 }
