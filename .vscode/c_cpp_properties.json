@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Win32-MinGW",
+            "name": "MinGW",
             "includePath": [
                 "${workspaceRoot}/**",
                 "D:/mingw64/include",
@@ -23,15 +23,18 @@
                 "limitSymbolsToIncludedHeaders": true
             },
             "compilerPath": "D:/mingw64/bin/g++.exe",
-            "cStandard": "c11",
+            "cStandard": "c18",
             "cppStandard": "c++20",
             "compilerArgs": [],
             "configurationProvider": "ms-vscode.cmake-tools"
         },
         {
-            "name": "GCC-VisualStudio",
+            "name": "VisualStudio",
             "includePath": [
-                "${workspaceFolder}/**"
+                "D:/Visual Studio/VC/include",
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.10150.0/ucrt",
+                "${workspaceFolder}/**",
+                "D:/SFML-2.5.1/include"
             ],
             "defines": [
                 "_DEBUG",
@@ -40,8 +43,8 @@
             ],
             "windowsSdkVersion": "8.1",
             "compilerPath": "D:/Visual Studio/VC/bin/cl.exe",
-            "cStandard": "c11",
-            "cppStandard": "c++17",
+            "cStandard": "c18",
+            "cppStandard": "c++20",
             "intelliSenseMode": "msvc-x64"
         }
     ],

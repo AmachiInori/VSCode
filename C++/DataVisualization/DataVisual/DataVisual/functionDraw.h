@@ -33,7 +33,7 @@ private:
 	double infDeal = 0.1;
 	double zoomX = 0.3;
 	double zoomY = 0.3;
-	double XMax, XMin, YMax, YMin;
+	double XMax = 0, XMin = 0, YMax = 0, YMin = 0;
 
 	const static mode lineMode = 0;
 	const static mode pointMode = 1;
@@ -86,7 +86,7 @@ funcDraw::funcDraw(double(*Xfunction)(double), double(*Yfunction)(double), unsig
 
 int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 	if (m > 2) throw(_INVALID_MODE);
-	if (end < start) swap(end, start);
+	if (end < start) std::swap(end, start);
 	if (precision > (right - left)) throw(_TOO_BIG_PRE);
 	if (precision < 1) throw(_INVALID_PRE);
 	if (_type == polar && ((start < -31.3 || end > 31.3))) throw(_INDE_OVERFLOW);
@@ -127,7 +127,7 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 	for (double i = start; i - end < doubleErr; i += step) {
 		double tempFunctionValue = functionRunnerY(i);
 		int dealTime = 0;
-		while (tempFunctionValue == BADNUMBER || fabs(tempFunctionValue) > infLimit) {
+		while (tempFunctionValue == BADNUMBER || abs(tempFunctionValue) > infLimit) {
 			double newPoint = i - infDeal;
 			infDeal *= -2;
 			tempFunctionValue = functionRunnerY(newPoint);
@@ -137,7 +137,7 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 
 		double tempXValue = functionRunnerX(i);
 		dealTime = 0;
-		while (tempXValue == BADNUMBER || fabs(tempXValue) > infLimit) {
+		while (tempXValue == BADNUMBER || abs(tempXValue) > infLimit) {
 			double newPoint = i - infDeal;
 			infDeal *= -2;
 			tempXValue = functionRunnerX(newPoint);
@@ -168,7 +168,7 @@ funcDraw::_minmaxs funcDraw::preProcessX(const double start, const double end) {
 	for (double i = start; i < end; i += step) {
 		double temp = functionRunnerX(i);
 		int dealTime = 0;
-		while (temp == BADNUMBER || fabs(temp) > infLimit) {
+		while (temp == BADNUMBER || abs(temp) > infLimit) {
 			double newPoint = i - infDeal;
 			infDeal *= -2;
 			temp = functionRunnerY(newPoint);
@@ -190,7 +190,7 @@ funcDraw::_minmaxs funcDraw::preProcessY(const double start, const double end) {
 	for (double i = start; i < end; i += step) {
 		double temp = functionRunnerY(i);
 		int dealTime = 0;
-		while (temp == BADNUMBER || fabs(temp) > infLimit) {
+		while (temp == BADNUMBER || abs(temp) > infLimit) {
 			double newPoint = i - infDeal;
 			infDeal *= -2;
 			temp = functionRunnerY(newPoint);
