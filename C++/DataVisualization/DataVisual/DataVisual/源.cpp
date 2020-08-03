@@ -5,11 +5,11 @@ double yfun(double x) { return 2 * sin(x) - sin(2 * x); }
 double xFun(double x) { return 2 * cos(x) - cos(2 * x); }
 double xx(double x) { return x * x * x / 3 + x + 1 / 3; }
 double yy(double x) { return x * x * x / 3 - x + 1 / 3; }
-double y(double x) { return sin(x) + x; }
+double y(double x) { return abs(x) * exp(x); }
 
 int main() {
 	funcDraw test(y, 960, 960);
-	test.drawFunction(-15, 15);
+	test.drawFunction(-2, 1);
 	return 0;
 }
 	
