@@ -5,11 +5,11 @@ double yfun(double x) { return 2 * sin(x) - sin(2 * x); }
 double xFun(double x) { return 2 * cos(x) - cos(2 * x); }
 double xx(double x) { return x * x * x / 3 + x + 1 / 3; }
 double yy(double x) { return x * x * x / 3 - x + 1 / 3; }
-double y(double x) { return abs(x) * exp(x); }
+double y(double x) { return log(x); }
 
 int main() {
 	funcDraw test(y, 960, 960);
-	test.drawFunction(-2, 1);
+	test.drawFunction(-1, 1);
 	return 0;
 }
 	
@@ -48,5 +48,11 @@ int main() {
  ** 问题用例5  double yy(double x) { return x * x * x / 3 - x + 1 / 3; }
  **			   double y(double x) { return sin(x); }
  **            test.drawFunction(0, 6.28);
+ ** TODO	   调试
+ *********************************************************/
+
+ /*********************************************************
+ ** 问题用例6  double y(double x) { return log(x); }
+ **            test.drawFunction(-1, 1);
  ** TODO	   调试
  *********************************************************/
