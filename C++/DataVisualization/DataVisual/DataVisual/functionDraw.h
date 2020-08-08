@@ -5,6 +5,8 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <iomanip>
+#include <thread>
 
 using namespace std;
 
@@ -44,6 +46,7 @@ private:
 	bool isGrid = false; //未实装
 	bool isLowGraph = false;
 	bool differentiable = true;
+	int maxThread;
 
 	unsigned int windowHeight = 720;
 	unsigned int windowLength = 960;
@@ -59,6 +62,7 @@ private:
 	double functionRunnerY(double x);
 	_minmaxs preProcessX(const double start, const double end);
 	_minmaxs preProcessY(const double start, const double end);
+//	vector<double> parallelRunner(double(*func)(double), double start, double step, int nums);
 
 	void printComment(const double sta, const double end);
 	void drawUCS(const double ZPX, const double ZPY, const double unitX, const double unitY);
@@ -79,6 +83,7 @@ funcDraw::funcDraw(double(*function)(double), unsigned int length, unsigned int 
 	right = left * 9;
 	up = windowHeight / 10;
 	down = up * 9;
+	maxThread = thread::hardware_concurrency();
 }
 
 funcDraw::funcDraw(double(*Xfunction)(double), double(*Yfunction)(double), unsigned int length, unsigned int height)
@@ -87,6 +92,7 @@ funcDraw::funcDraw(double(*Xfunction)(double), double(*Yfunction)(double), unsig
 	right = left * 9;
 	up = windowHeight / 10;
 	down = up * 9;
+	maxThread = thread::hardware_concurrency();
 }
 
 int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
@@ -94,15 +100,18 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 	if (end < start) std::swap(end, start);
 	if (precision > (right - left)) throw(error::_TOO_BIG_PRE);
 	if (precision < 1) throw(error::_INVALID_PRE);
-	if (_type == polar && ((start < -31.3 || end > 31.3))) throw(error::_INDE_OVERFLOW);
+//	if (_type == polar && ((start < -31.3 || end > 31.3))) throw(error::_INDE_OVERFLOW);  功能删除，注意：catch块内并未删除
 
+	cout << "Max thread numbers is: " << maxThread << "\n";
+	cout << "Preprocessing... \n";
 	infDeal = (end - start) / 500;
-	_minmaxs MaxMinX = this->preProcessX(start, end);
-	_minmaxs MaxMinY = this->preProcessY(start, end);
+	_minmaxs MaxMinX = this->preProcessX(start, end);//这算法可以做多线程 太慢了
+	_minmaxs MaxMinY = this->preProcessY(start, end);//这算法可以做多线程 太慢了
 	XMax = MaxMinX.first, XMin = MaxMinX.second;
 	YMax = MaxMinY.first, YMin = MaxMinY.second;
-	const double step = (double)(XMax - XMin) * (double)precision / (double)(right - left);
-	if ((XMax - XMin) > 10 * windowLength || (YMax - YMin) > 10 * windowHeight)
+	const double step = (_type == polar) ? max((double)precision * (end - start) / 100000, (double)precision / 100)
+		: (double)(XMax - XMin) * (double)precision / (double)(right - left);
+	if ((XMax - XMin) > 5 * windowLength || (YMax - YMin) > 5 * windowHeight)
 		isLowGraph = true;
 
 	double tempUnit;
@@ -126,32 +135,27 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 	else if (YMin > 0) tempZeroPoint = down;
 	else tempZeroPoint = down - (0 - YMin) * unitY;
 	const double zeroPointY = tempZeroPoint;
+	cout << "\bdone.      \n";
 
 	this->drawUCS(zeroPointX, zeroPointY, unitX, unitY);
 
+	cout << "Drawing... ";
 	pair<double, double> lastPair;
 	int j = 0;
 	double slope, lastSlope;
-	for (double i = start; i - end < doubleErr; i += step) {
+
+	for (double i = start; i - end < doubleErr; i += step) { //这算法可以做多线程 太慢了 一次四个点多香
+		stringstream SS;
+		SS << setiosflags(ios::fixed) << setprecision(2) << "Drawing process: " << 100 * (i - start) / (end - start) << "%.";
+		outtextxy(5, 0, (LPCTSTR)SS.str().data());
+
 		double tempFunctionValue = functionRunnerY(i);
-		int dealTime = 0;
-		while (tempFunctionValue == BADNUMBER || abs(tempFunctionValue) > infLimit) {
-			double newPoint = i - infDeal;
-			infDeal *= -2;
-			tempFunctionValue = functionRunnerY(newPoint);
-			dealTime++;
-			if (dealTime >= maxDealTime) throw(error::_OVERFLOW_);
-		}
+		if (tempFunctionValue > YMax) YMax = tempFunctionValue;
+		if (tempFunctionValue < YMin) YMin = tempFunctionValue;
 
 		double tempXValue = functionRunnerX(i);
-		dealTime = 0;
-		while (tempXValue == BADNUMBER || abs(tempXValue) > infLimit) {
-			double newPoint = i - infDeal;
-			infDeal *= -2;
-			tempXValue = functionRunnerX(newPoint);
-			dealTime++;
-			if (dealTime >= maxDealTime) throw(error::_OVERFLOW_);
-		}
+		if (tempFunctionValue > XMax) XMax = tempFunctionValue;
+		if (tempFunctionValue < XMin) XMin = tempFunctionValue;
 
 		double xLoca = zeroPointX + tempXValue * unitX;
 		double yLoca = zeroPointY - tempFunctionValue * unitY;
@@ -176,8 +180,12 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 			lastPair = { xLoca, yLoca };
 		}
 		j++;
+		stringstream EMPTY;
+		EMPTY << "                               ";
+		outtextxy(5, 0, (LPCTSTR)EMPTY.str().data());
 	}
 	this->printComment(start, end);
+	cout << "\ndone.\n";
 	std::cin.get();
 	closegraph();
 	return 0;
@@ -189,18 +197,12 @@ funcDraw::_minmaxs funcDraw::preProcessX(const double start, const double end) {
 	for (double i = start; i < end; i += step) {
 		double temp = functionRunnerX(i);
 		int dealTime = 0;
-		while (temp == BADNUMBER || abs(temp) > infLimit) {
-			double newPoint = i - infDeal;
-			infDeal *= -2;
-			temp = functionRunnerY(newPoint);
-			dealTime++;
-			if (dealTime >= maxDealTime) {
-				pointErr err = { error::_OVERFLOW_, i };
-				throw(err);
-			}
-		}
+		
 		if (temp > _max) _max = temp;
 		if (temp < _min) _min = temp;
+		cout << setiosflags(ios::fixed) << setprecision(0);
+		cout << (i - start) / (end - start) / 2 * 100 << "%";
+		std::cout << "\r";
 	}
 	return{ _max + abs(_max * zoomX), _min - abs(_min * zoomX) };
 }
@@ -211,18 +213,12 @@ funcDraw::_minmaxs funcDraw::preProcessY(const double start, const double end) {
 	for (double i = start; i < end; i += step) {
 		double temp = functionRunnerY(i);
 		int dealTime = 0;
-		while (temp == BADNUMBER || abs(temp) > infLimit) {
-			double newPoint = i - infDeal;
-			infDeal *= -2;
-			temp = functionRunnerY(newPoint);
-			dealTime++;
-			if (dealTime >= maxDealTime) {
-				pointErr err = { error::_OVERFLOW_, i };
-				throw(err);
-			}
-		}
+		
 		if (temp > max) max = temp;
 		if (temp < min) min = temp;
+		cout << setiosflags(ios::fixed) << setprecision(0);
+		cout << (i - start) / (end - start) / 2 * 100 + 50 << "%";
+		std::cout << "\r";
 	}
 	return{ max + abs(max * zoomY), min - abs(min * zoomY) };
 }
@@ -233,16 +229,46 @@ double funcDraw::functionRunnerX(double x) {
 		try {
 			res = this->_functionY(x);
 			res = res * cos(x);
+			int dealTime = 0;
+			while (abs(res) > infLimit) {
+				double newPoint = x - infDeal;
+				infDeal *= -2;
+				res = this->_functionY(x);
+				res = res * cos(x);
+				dealTime++;
+				if (dealTime >= maxDealTime) {
+					pointErr err = { error::_OVERFLOW_, x };
+					throw(err);
+				}
+			}
 		}
-		catch (const std::exception) { return BADNUMBER; }
-		return res;
+		catch (const std::exception) { 
+			pointErr err = { error::_OVERFLOW_, x };
+			throw(err);
+		}
 	}
 	else {
-		try { res = this->_functionX(x); }
-		catch (const std::exception) { return BADNUMBER; }
+		try { 
+			res = this->_functionX(x);
+			int dealTime = 0;
+			while (abs(res) > infLimit) {
+				double newPoint = x - infDeal;
+				infDeal *= -2;
+				res = this->_functionX(newPoint);
+				dealTime++;
+				if (dealTime >= maxDealTime) {
+					pointErr err = { error::_OVERFLOW_, x };
+					throw(err);
+				}
+			}
+		}
+		catch (const std::exception) {
+			pointErr err = { error::_OVERFLOW_, x };
+			throw(err);
+		}
 		if (abs(res - x) > doubleErr) _type = parametric;
-		return res;
 	}
+	return res;
 }
 
 double funcDraw::functionRunnerY(double x) {
@@ -251,15 +277,45 @@ double funcDraw::functionRunnerY(double x) {
 		try {
 			res = this->_functionY(x);
 			res = res * sin(x);
+			int dealTime = 0;
+			while (abs(res) > infLimit) {
+				double newPoint = x - infDeal;
+				infDeal *= -2;
+				res = this->_functionY(newPoint);
+				res = res * sin(x);
+				dealTime++;
+				if (dealTime >= maxDealTime) {
+					pointErr err = { error::_OVERFLOW_, x };
+					throw(err);
+				}
+			}
 		}
-		catch (const std::exception) { return BADNUMBER; }
-		return res;
+		catch (const std::exception) {
+			pointErr err = { error::_OVERFLOW_, x };
+			throw(err);
+		}
 	}
 	else {
-		try { res = this->_functionY(x); }
-		catch (const std::exception) { return BADNUMBER; }
-		return res;
+		try {
+			res = this->_functionY(x);
+			int dealTime = 0;
+			while (abs(res) > infLimit) {
+				double newPoint = x - infDeal;
+				infDeal *= -2;
+				res = this->_functionY(newPoint);
+				dealTime++;
+				if (dealTime >= maxDealTime) {
+					pointErr err = { error::_OVERFLOW_, x };
+					throw(err);
+				}
+			}
+		}
+		catch (const std::exception) {
+			pointErr err = { error::_OVERFLOW_, x };
+			throw(err);
+		}
 	}
+	return res;
 }
 
 void funcDraw::drawUCS(const double ZPX, const double ZPY, const double unitX, const double unitY) {
@@ -276,10 +332,6 @@ void funcDraw::drawUCS(const double ZPX, const double ZPY, const double unitX, c
 	outtextxy((int)ZPX + 10, (int)ZPY + 10, (LPCTSTR)"0");
 	outtextxy(right, (int)ZPY, (LPCTSTR)"x");
 	outtextxy((int)ZPX - 20, up + 5, (LPCTSTR)"y");
-
-	auto getUnit = [=](double _max, double _min) {
-		//找坐标轴分度
-	};
 }
 
 void funcDraw::printComment(const double sta, const double end) {
@@ -301,9 +353,12 @@ void funcDraw::printComment(const double sta, const double end) {
 	if (!differentiable) {
 		stringstream ERND;
 		ERND << "warning: non-differentiable point(s) in the image";
-		outtextxy(5, errLoca -= 25, (LPCTSTR)ERND.str().data());
+//		outtextxy(5, errLoca -= 25, (LPCTSTR)ERND.str().data());  功能存在问题
 	}
-	
+
+	auto getUnit = [=](double _max, double _min) {
+		//找坐标轴分度
+	};
 }
 
 int funcDraw::drawPolarFunction(double start, double end, mode m, preci precision) {
@@ -322,7 +377,7 @@ int funcDraw::drawFunction(double start, double end, mode m, preci precision) {
 		cout << "funcion drawing process crashed with expection:\n";
 		if (e == error::_INVALID_MODE) {
 			cout << "invalid mode:" << m;
-			cout << "\ntry drawing with default mode \"lineMode\"?\n";
+			cout << "\nwill drawing with default mode \"lineMode\"\n";
 			std::cin.get();
 			this->drawFunction(start, end, 0, precision);
 			return 1;
@@ -330,7 +385,7 @@ int funcDraw::drawFunction(double start, double end, mode m, preci precision) {
 		if (e == error::_TOO_BIG_PRE) cout << "too big precision: " << precision;
 		if (e == error::_INVALID_PRE) cout << "invalid precision: " << precision;
 		if (e == error::_TOO_BIG_PRE || e == error::_INVALID_PRE) {
-			cout << "\ntry drawing with default precision 1?\n";
+			cout << "\nwill drawing with default precision 1\n";
 			std::cin.get();
 			this->drawFunction(start, end, m, 1);
 			return 1;

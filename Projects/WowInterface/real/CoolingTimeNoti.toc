@@ -1,0 +1,9 @@
+## Interface: 80300
+## Title: CoolingTimeNoti
+## Version: 0.10
+## Author: Inori Amachi
+## Notes: Provides the function of using chat messages to report cooling time
+## SavedVariables: CTNGlobalConfig
+## SavedVariablesPerCharacter: CTGPersonalConfig
+
+CTNmain.lua

@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "MinGW",
+            "name": "GNU-C++",
             "includePath": [
                 "${workspaceRoot}/**",
                 "D:/mingw64/include",
@@ -29,7 +29,7 @@
             "configurationProvider": "ms-vscode.cmake-tools"
         },
         {
-            "name": "VisualStudio",
+            "name": "VC++",
             "includePath": [
                 "D:/Visual Studio/VC/include",
                 "C:/Program Files (x86)/Windows Kits/10/Include/10.0.10150.0/ucrt",

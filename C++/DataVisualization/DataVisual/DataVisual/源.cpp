@@ -4,12 +4,26 @@
 double yfun(double x) { return 2 * sin(x) - sin(2 * x); }
 double xFun(double x) { return 2 * cos(x) - cos(2 * x); }
 double xx(double x) { return x * x * x / 3 + x + 1 / 3; }
-double yy(double x) { return x * x * x / 3 - x + 1 / 3; }
-double y(double x) { return log(x); }
+double yy(double x) { return x * x * x * x;  }
+double yyy(double x) { 
+	double res = 1;
+	for (int i = 1; i < x; i++) {
+		if (i % 2) res *= i;
+		else res /= i;
+	}
+	return res;
+}
+double y(double x) { 
+	double res = 0;
+	for (int i = 1; i < x; i++) {
+		res += 1.0 / (double)i;
+	}
+	return res;
+}
 
 int main() {
-	funcDraw test(y, 960, 960);
-	test.drawFunction(-1, 1);
+	funcDraw test(yy, 800, 800);
+	test.drawFunction(1, 150);
 	return 0;
 }
 	
@@ -42,6 +56,7 @@ int main() {
  ** 问题用例4  double y(double x) { return x * x; }
  **            test.drawPolarFunction(0, 31.4);
  ** TODO	   调试
+ ** SOLVED
  *********************************************************/
 
  /*********************************************************
