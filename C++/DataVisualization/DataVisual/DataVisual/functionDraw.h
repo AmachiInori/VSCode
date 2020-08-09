@@ -45,7 +45,7 @@ private:
 	functionType _type = normal;
 	bool isGrid = false; //Î´Êµ×°
 	bool isLowGraph = false;
-	bool differentiable = true;
+	bool differentiable = true;//ÒÑÉ¾³ý
 	int maxThread;
 
 	unsigned int windowHeight = 720;
@@ -197,7 +197,7 @@ funcDraw::_minmaxs funcDraw::preProcessX(const double start, const double end) {
 	for (double i = start; i < end; i += step) {
 		double temp = functionRunnerX(i);
 		int dealTime = 0;
-		
+
 		if (temp > _max) _max = temp;
 		if (temp < _min) _min = temp;
 		cout << setiosflags(ios::fixed) << setprecision(0);
@@ -213,7 +213,7 @@ funcDraw::_minmaxs funcDraw::preProcessY(const double start, const double end) {
 	for (double i = start; i < end; i += step) {
 		double temp = functionRunnerY(i);
 		int dealTime = 0;
-		
+
 		if (temp > max) max = temp;
 		if (temp < min) min = temp;
 		cout << setiosflags(ios::fixed) << setprecision(0);
@@ -242,13 +242,13 @@ double funcDraw::functionRunnerX(double x) {
 				}
 			}
 		}
-		catch (const std::exception) { 
+		catch (const std::exception) {
 			pointErr err = { error::_OVERFLOW_, x };
 			throw(err);
 		}
 	}
 	else {
-		try { 
+		try {
 			res = this->_functionX(x);
 			int dealTime = 0;
 			while (abs(res) > infLimit) {
