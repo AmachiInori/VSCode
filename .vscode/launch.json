@@ -1,46 +1,58 @@
 {
     "version": "0.2.0",
     "configurations": [
-
-    {
-        "type": "node",
-        "request": "launch",
-        "name": "Node Launch",
-        "program": "${workspaceFolder}/app.js",
-        "skipFiles": [
-            "<node_internals>/**"
-        ]
-    },
         {
-            "name": "Launch Chrome",
+            "type": "java",
+            "name": "CodeLens (Launch) - abs",
+            "request": "launch",
+            "mainClass": "JAVA.abs",
+            "projectName": "VSCode_e76b85b7"
+        },
+        {
+            "type": "java",
+            "name": "Java",
+            "request": "launch",
+            "mainClass": ""
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Node",
+            "program": "${workspaceFolder}/app.js",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "name": "Chrome",
             "request": "launch",
             "type": "pwa-chrome",
             "url": "${file}",
             "webRoot": "${workspaceFolder}"
         },
         {
-            "name": "Python: 当前文件",
+            "name": "Python",
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal"
         },
         {
-            "name": "C++ Launch (GDB)", // 配置名称，将会在启动配置的下拉菜单中显示
-            "type": "cppdbg", // 配置类型，这里只能为cppdbg
-            "request": "launch", // 请求配置类型，可以为launch（启动）或attach（附加）
-            "targetArchitecture": "x86", // 生成目标架构，一般为x86或x64，可以为x86, arm, arm64, mips, x64, amd64, x86_64
-            "program": "${file}.exe", // 将要进行调试的程序的路径
-            "miDebuggerPath": "d:\\mingw64\\bin\\gdb.exe", // miDebugger的路径，注意这里要与MinGw的路径对应
+            "name": "C++ (GDB)",
+            "type": "cppdbg",
+            "request": "launch",
+            "targetArchitecture": "x86",
+            "program": "${file}.exe",
+            "miDebuggerPath": "d:\\mingw64\\bin\\gdb.exe",
             "args": [
                 "blackkitty",
                 "1221",
                 "# #"
-            ], // 程序调试时传递给程序的命令行参数，一般设为空即可
-            "stopAtEntry": false, // 设为true时程序将暂停在程序入口处，一般设置为false
-            "cwd": "${workspaceRoot}", // 调试程序时的工作目录，一般为${workspaceRoot}即代码所在目录
-            "externalConsole": false, // 调试时是否显示控制台窗口，一般设置为true显示控制台
-            "preLaunchTask": "g++" // 调试会话开始前执行的任务，一般为编译程序，c++为g++, c为gcc
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "externalConsole": false,
+            "preLaunchTask": "g++"
         }
     ]
 }

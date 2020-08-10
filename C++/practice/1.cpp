@@ -13,5 +13,6 @@ void printL(int nums, ...) {
 
 int main(){
 	printL(5);
+	printf();
 	return 0;
 }
