@@ -22,8 +22,8 @@ double y(double x) {
 }
 
 int main() {
-	funcDraw test(yy, 800, 800);
-	test.drawFunction(1, 150);
+	funcDraw test(yyy, 800, 800);
+	test.drawFunction(1, 15000000);
 	return 0;
 }
 	
