@@ -1,12 +1,6 @@
-#include <string>
-#include <iostream>
+#include "ComplierBase.h"
 #ifndef _TOKEN_H_
 #define _TOKEN_H_
-
-typedef short tokenType;
-static const tokenType _NUM = 0, _FLO = 1, _STR = 2, _CHA = 3;
-static const tokenType _EQUA = 4, _COMP = 5;
-static const tokenType _ID = 6, _RE = 7, _SP = 8;
 
 class token {
 public:
@@ -46,11 +40,11 @@ public:
     explicit equa(int _type) : token(_EQUA), type(_type) {}
     void printToken() override { std::cout << "EQUA " << type; }
 };
-class comp : public token { //一般运算符
+class oper : public token { //一般运算符
 public:
     int type;
-    explicit comp(int _type) : token(_COMP), type(_type) {}
-    void printToken() override { std::cout << "COMP " << type; }
+    explicit oper(int _type) : token(_OPER), type(_type) {}
+    void printToken() override { std::cout << "OPER " << type; }
 };
 
 class id : public token { //一般标识符
@@ -66,6 +60,7 @@ public:
     void printToken() override { std::cout << "RE " << type; }
 };
 class sp : public token { //分隔符
+public:
 public:
     char type;
     explicit sp(char _type) : token(_SP), type(_type) {}
