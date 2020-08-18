@@ -1,13 +1,12 @@
-#ifndef _ACB_H_
-#define _ACB_H_
-
-#include <string>
 #include <iostream>
 #include <unordered_map>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <string>
+#ifndef _ACB_H_
+#define _ACB_H_
 
 typedef short tokenType;
 static const tokenType _NUM = 0;
@@ -31,7 +30,8 @@ static std::unordered_map<char, bool> __separator = {
 };
 
 static std::unordered_map<char, bool> __operator = {
-    {'+', true}, {'-', true}, {'*', false}, {']', false}, {'{', true}, {'}', true}
+    {'+', true}, {'-', true}, {'*', false}, {'/', false}, {'%', true}, {'&', true}, 
+    {'>', true}, {'<', true}, {'=', true}, {'!', true}
 };
 
 namespace ACError {

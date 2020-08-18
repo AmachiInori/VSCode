@@ -16,9 +16,9 @@ private:
         return c == '+' || c == '-' || c == '*' || c == '/' ||
         c == '%' || c == '>' || c == '<' || c == '=' || c == '!'; 
         }
-    bool insertNewToken(token t);
+    bool insertNewToken(id const &t);
 public:
-    explicit lexer(std::string fileName);
+    explicit lexer(std::string& fileName);
     unsigned int getLine() const { return _line; }
     std::unordered_map<std::string, token> getIdTable() const { return _idTable; }
 
