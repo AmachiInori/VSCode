@@ -19,8 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="functionDraw.cpp" />
-    <ClCompile Include="MPEbase.cpp" />
+    <ClInclude Include="functionDraw.h">
+      <FileType>CppCode</FileType>
+    </ClInclude>
+    <ClCompile Include="test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="message.h" />
+    <ClInclude Include="MPEbase.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F546C106-B376-4BD5-94D7-7D7A014EFD25}</ProjectGuid>
