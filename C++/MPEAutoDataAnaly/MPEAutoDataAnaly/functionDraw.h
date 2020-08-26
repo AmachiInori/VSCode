@@ -20,7 +20,7 @@ private:
 	typedef pair<double, double> _minmaxs;
 	typedef pair<unsigned int, double> pointErr;
 	typedef int error;
-	enum functionType { normal, polar, parametric };
+	enum functionType { normal, polar, parametric, point };
 
 	const static long maxDealTime = 255;
 	static constexpr long infLimit = INT_MAX / 2;
@@ -30,7 +30,7 @@ private:
 	double infDeal = 0.1;
 	double zoomX = 0.3;
 	double zoomY = 0.3;
-	double XMax = 0, XMin = 0, YMax = 0, YMin = 0;
+	double XMax = DBL_MIN, XMin = DBL_MAX, YMax = DBL_MIN, YMin = DBL_MAX;
 	double _unitX, _unitY, _xZero, _yZero;
 
 	const static mode lineMode = 0;
@@ -44,6 +44,8 @@ private:
 
 	vector<double> extraPointX;
 	vector<double> extraPointY;
+	vector<double> PointsX;
+	vector<double> PointsY;
 
 	unsigned int windowHeight = 720;
 	unsigned int windowLength = 960;
@@ -59,16 +61,19 @@ private:
 	double functionRunnerY(double x);
 	_minmaxs preProcessX(const double start, const double end);
 	_minmaxs preProcessY(const double start, const double end);
+	void calcuUnit();
 //	vector<double> parallelRunner(double(*func)(double), double start, double step, int nums);
 
 	void printComment(const double sta, const double end);
 	void drawUCS(const double ZPX, const double ZPY, const double unitX, const double unitY);
 
 	int _drawFunction(double start, double end, mode m, preci precision);
+	int _drawPointsWithLine();
 
 public:
 	explicit funcDraw(double(*function)(double), unsigned int length = 960, unsigned int height = 720);
 	explicit funcDraw(double(*Xfunction)(double), double(*Yfunction)(double), unsigned int length = 960, unsigned int height = 720);
+	explicit funcDraw(vector<double> &_x, vector<double> &_y, unsigned int length = 960, unsigned int height = 720);
 
 	void pointDraw(vector<double> &x, vector<double> &y);
 	int drawFunction(double start, double end, mode m = lineMode, preci precision = 1);
@@ -82,6 +87,7 @@ namespace error {
 	const static error _OVERFLOW_ = 3;
 	const static error _INVALID_PRE = 4;
 	const static error _INDE_OVERFLOW = 5;
+	const static error _VECTOR_SIZE_NOT_EQUAL = 6;
 };
 
 funcDraw::funcDraw(double(*function)(double), unsigned int length, unsigned int height)
@@ -102,6 +108,16 @@ funcDraw::funcDraw(double(*Xfunction)(double), double(*Yfunction)(double), unsig
 	maxThread = thread::hardware_concurrency();
 }
 
+funcDraw::funcDraw(vector<double> &_x, vector<double> &_y, unsigned int length, unsigned int height)
+	: windowHeight(height), windowLength(length), PointsX(_x), PointsY(_y) {
+	left = windowLength / 10;
+	right = left * 9;
+	up = windowHeight / 10;
+	down = up * 9;
+	maxThread = thread::hardware_concurrency();
+	_type = point;
+}
+
 int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 	if (m > 2) throw(error::_INVALID_MODE);
 	if (end < start) std::swap(end, start);
@@ -109,7 +125,6 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 	if (precision < 1) throw(error::_INVALID_PRE);
 	//	if (_type == polar && ((start < -31.3 || end > 31.3))) throw(error::_INDE_OVERFLOW);  功能删除，注意：catch块内并未删除
 
-	cout << "Max thread numbers is: " << maxThread << "\n";
 	cout << "Preprocessing... \n";
 	infDeal = (end - start) / 500;
 	_minmaxs MaxMinX = this->preProcessX(start, end);//这算法可以做多线程 太慢了
@@ -121,32 +136,10 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 	if ((XMax - XMin) > 5 * windowLength || (YMax - YMin) > 5 * windowHeight)
 		isLowGraph = true;
 
-	double tempUnit;
-	if (XMin > 0) tempUnit = (right - left) / XMax;
-	else if (XMax < 0) tempUnit = (right - left) / -XMin;
-	else tempUnit = (right - left) / (XMax - XMin);
-	const double unitX = tempUnit;
-
-	if (YMin > 0) tempUnit = (down - up) / YMax;
-	else if (YMax < 0) tempUnit = (down - up) / -YMin;
-	else tempUnit = (down - up) / (YMax - YMin);
-	const double unitY = tempUnit;
-
-	double tempZeroPoint;
-	if (XMin > 0) tempZeroPoint = left;
-	else if (XMax < 0) tempZeroPoint = right;
-	else  tempZeroPoint = -XMin * unitX + left;
-	const double zeroPointX = tempZeroPoint;
-
-	if (YMax < 0) tempZeroPoint = up;
-	else if (YMin > 0) tempZeroPoint = down;
-	else tempZeroPoint = down - (0 - YMin) * unitY;
-	const double zeroPointY = tempZeroPoint;
+	this->calcuUnit();
 	cout << "\bdone.      \n";
 
-	_unitX = unitX, _unitY = unitY, _xZero = zeroPointX, _yZero = zeroPointY;
-
-	this->drawUCS(zeroPointX, zeroPointY, unitX, unitY);
+	this->drawUCS(_xZero, _yZero, _unitX, _unitY);
 
 	cout << "Drawing... ";
 	pair<double, double> lastPair;
@@ -166,8 +159,8 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 		if (tempFunctionValue > XMax) XMax = tempFunctionValue;
 		if (tempFunctionValue < XMin) XMin = tempFunctionValue;
 
-		double xLoca = zeroPointX + tempXValue * unitX;
-		double yLoca = zeroPointY - tempFunctionValue * unitY;
+		double xLoca = _xZero + tempXValue * _unitX;
+		double yLoca = _yZero - tempFunctionValue * _unitY;
 		if (j == 0) {
 			putpixel((int)xLoca, (int)yLoca, WHITE);
 			lastPair = { xLoca, yLoca };
@@ -198,13 +191,46 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 	if (willDrawPoint == true) {
 		cout << "Draw Extra Point...\n";
 		for (int i = 0; i < extraPointX.size(); i++) {
-			putpixel(int(extraPointX[i] * unitX + zeroPointX), int(-extraPointY[i] * unitY + zeroPointY), WHITE);
-			putpixel(int(extraPointX[i] * unitX + zeroPointX) - 1, int(-extraPointY[i] * unitY + zeroPointY), WHITE);
-			putpixel(int(extraPointX[i] * unitX + zeroPointX), int(-extraPointY[i] * unitY + zeroPointY) - 1, WHITE);
-			putpixel(int(extraPointX[i] * unitX + zeroPointX) + 1, int(-extraPointY[i] * unitY + zeroPointY), WHITE);
-			putpixel(int(extraPointX[i] * unitX + zeroPointX), int(-extraPointY[i] * unitY + zeroPointY) + 1, WHITE);
+			putpixel(int(extraPointX[i] * _unitX + _xZero), int(-extraPointY[i] * _unitY + _yZero), WHITE);
+			putpixel(int(extraPointX[i] * _unitX + _xZero) - 1, int(-extraPointY[i] * _unitY + _yZero), WHITE);
+			putpixel(int(extraPointX[i] * _unitX + _xZero), int(-extraPointY[i] * _unitY + _yZero) - 1, WHITE);
+			putpixel(int(extraPointX[i] * _unitX + _xZero) + 1, int(-extraPointY[i] * _unitY + _yZero), WHITE);
+			putpixel(int(extraPointX[i] * _unitX + _xZero), int(-extraPointY[i] * _unitY + _yZero) + 1, WHITE);
 		}
 		cout << "Done.\n";
+	}
+	std::cin.get();
+	closegraph();
+	return 0;
+}
+
+int funcDraw::_drawPointsWithLine() {
+	if (PointsX.size() != PointsY.size()) throw(error::_VECTOR_SIZE_NOT_EQUAL);
+	_For_each(PointsX.begin(), PointsX.end(), [this](double temp) {
+		if (XMax < temp) XMax = temp;
+		if (XMin > temp) XMin = temp;
+	});
+	_For_each(PointsY.begin(), PointsY.end(), [this](double temp) {
+		if (YMax < temp) YMax = temp;
+		if (YMin > temp) YMin = temp;
+	});
+	this->calcuUnit();
+	this->drawUCS(_xZero, _yZero, _unitX, _unitY);
+	cout << "Drawing... ";
+
+	pair<double, double> lastPair;
+	
+	for (int i = 0; i < PointsX.size(); i++) {
+		double xLoca = _xZero + PointsX[i] * _unitX;
+		double yLoca = _yZero - PointsY[i] * _unitY;
+		if (i == 0) {
+			putpixel((int)xLoca, (int)yLoca, WHITE);
+			lastPair = { xLoca, yLoca };
+		}
+		else {
+			line((int)xLoca, (int)yLoca, (int)lastPair.first, (int)lastPair.second);
+			lastPair = { xLoca, yLoca };
+		}
 	}
 	std::cin.get();
 	closegraph();
@@ -390,11 +416,17 @@ int funcDraw::drawPolarFunction(double start, double end, mode m, preci precisio
 }
 
 int funcDraw::drawFunction(double start, double end, mode m, preci precision) {
+	cout << "Max thread numbers is: " << maxThread << "\n";
 	int exitNumber = 1;
 	try {
 		cout << "-------------------------------\n";
 		cout << "try drawing function. \n \n";
-		exitNumber = this->_drawFunction(start, end, m, precision);
+		if (_type != point) {
+			exitNumber = this->_drawFunction(start, end, m, precision); // 改
+		}
+		else {
+			exitNumber = this->_drawPointsWithLine();
+		}
 	}
 	catch (error &e) {
 		cout << "funcion drawing process crashed with expection:\n";
@@ -415,6 +447,7 @@ int funcDraw::drawFunction(double start, double end, mode m, preci precision) {
 		}
 		if (e == error::_OVERFLOW_) cout << "overflow";
 		if (e == error::_INDE_OVERFLOW) cout << "independent variable overflow \npolar coordinates only support in (-31.4, 31.4)";
+		if (e == error::_VECTOR_SIZE_NOT_EQUAL)
 		std::cin.get();
 	}
 	catch (pointErr &e) {
@@ -436,6 +469,30 @@ void funcDraw::pointDraw(vector<double> &x, vector<double> &y) {
 	extraPointX = x;
 	extraPointY = y;
 	willDrawPoint = true;
+}
+
+void funcDraw::calcuUnit() {
+	double tempUnit;
+	if (XMin > 0) tempUnit = (right - left) / XMax;
+	else if (XMax < 0) tempUnit = (right - left) / -XMin;
+	else tempUnit = (right - left) / (XMax - XMin);
+	_unitX = tempUnit;
+
+	if (YMin > 0) tempUnit = (down - up) / YMax;
+	else if (YMax < 0) tempUnit = (down - up) / -YMin;
+	else tempUnit = (down - up) / (YMax - YMin);
+	_unitY = tempUnit;
+
+	double tempZeroPoint;
+	if (XMin > 0) tempZeroPoint = left;
+	else if (XMax < 0) tempZeroPoint = right;
+	else  tempZeroPoint = -XMin * _unitX + left;
+	_xZero = tempZeroPoint;
+
+	if (YMax < 0) tempZeroPoint = up;
+	else if (YMin > 0) tempZeroPoint = down;
+	else tempZeroPoint = down - (0 - YMin) * _unitY;
+	_yZero = tempZeroPoint;
 }
 
 #endif

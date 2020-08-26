@@ -23,10 +23,11 @@
       <FileType>CppCode</FileType>
     </ClInclude>
     <ClCompile Include="test.cpp" />
+    <ClInclude Include="smooth.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="message.h" />
-    <ClInclude Include="MPEbase.h" />
+    <ClInclude Include="linearAnalysis.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F546C106-B376-4BD5-94D7-7D7A014EFD25}</ProjectGuid>

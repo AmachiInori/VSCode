@@ -20,13 +20,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MPEbase.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="message.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="functionDraw.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="linearAnalysis.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="smooth.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

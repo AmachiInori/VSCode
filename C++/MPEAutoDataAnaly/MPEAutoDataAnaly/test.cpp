@@ -1,11 +1,18 @@
-#include "MPEbase.h"
+#include "linearAnalysis.h"
+#include "smooth.h"
 
 int main() {
-	std::vector<double> testx({ 0, 3, 3.5, 5, 8, 10, 13 });
-	std::vector<double> testy({ 1, 2, 3, 4, 5, 6, 7 });
-	linearAnalysis sol;
-	std::pair<double, double> res = sol.linaerAna(testx, testy);
-	std::cout << res.first << "  " << res.second;
-	std::cin.get();
+	vector<pair<double, double>> tv = {
+		{1, -5},
+		{2, 5},
+		{3, -5},
+		{4, 5},
+		{5, -5},
+		{6, 5}
+	};
+	smooth testS(tv);
+	auto res = testS.runSmooth();
+	funcDraw test(res.first, res.second);
+	test.drawFunction(1, 2);
 	return 0;
 }
