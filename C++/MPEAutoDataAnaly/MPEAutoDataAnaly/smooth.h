@@ -7,8 +7,14 @@
 
 using namespace std;
 
+namespace Smootherror {
+	typedef int error;
+	const static error _TOO_FEW_POINT = 1;
+};
+
 class smooth {
 private:
+	typedef int error;
 	vector<pair<double, double>> origin;
 	unsigned int resolution; //分辨率，每俩点之间插几个
 	unsigned int smoothLevel; //线性平滑取样数
@@ -20,7 +26,7 @@ private:
 	void linearInsert();
 	void linearSmooth();
 public:
-	explicit smooth(vector<pair<double, double>> &ori, unsigned int _reso = 25, unsigned int smoothLevel = 3, unsigned int smoothTime = 250);
+	explicit smooth(vector<pair<double, double>> &ori, unsigned int _reso = 25, unsigned int smoothLevel = 3, unsigned int smoothTime = 10);
 	pair<vector<double>, vector<double>> runSmooth();
 };
 
@@ -33,7 +39,7 @@ smooth::smooth(vector<pair<double, double>> &ori, unsigned int _reso, unsigned i
 
 void smooth::linearInsert() {
 	if (origin.size() <= 1) {
-		//1个点平滑你马呢
+		throw(Smootherror::_TOO_FEW_POINT);
 	}
 	for (int i = 0; i < origin.size() - 1; i++) {
 		for (int j = 0; j < resolution + 1; j++) {
@@ -57,9 +63,18 @@ void smooth::linearSmooth() {
 }
 
 pair<vector<double>, vector<double>> smooth::runSmooth() {
-	this->linearInsert();
-	for (int i = 0; i < smoothTimes; i++){
-		this->linearSmooth();
+	cout << "Linear smooth processing";
+	try {
+		this->linearInsert();
+		for (int i = 0; i < smoothTimes; i++) {
+			this->linearSmooth();
+		}
 	}
+	catch (error e) {
+		if (e == Smootherror::_TOO_FEW_POINT) {
+			cout << "too few point";
+		}
+	}
+	cout << "\ndone";
 	return {resX, resY};
 }

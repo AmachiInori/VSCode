@@ -45,9 +45,10 @@
             "program": "${file}.exe",
             "miDebuggerPath": "d:\\mingw64\\bin\\gdb.exe",
             "args": [
-                "blackkitty",
-                "1221",
-                "# #"
+                "AmachiInori"
+            ],
+            "setupCommands": [
+                { "text": "-enable-pretty-printing", "description": "enable pretty printing", "ignoreFailures": true }
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
