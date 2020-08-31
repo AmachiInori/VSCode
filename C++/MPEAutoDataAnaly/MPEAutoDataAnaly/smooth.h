@@ -53,10 +53,10 @@ void smooth::linearSmooth() {
 	vector<double> tempRes(resY);
 	for (int i = 0; i < resY.size(); i++) {
 		double res = 0;
-		for (int j = i > smoothLevel ? i - smoothLevel : 0; j <= min(i + smoothLevel, resY.size() - 1); j++) {
+		for (int j = i > smoothLevel ? i - smoothLevel : 0; j <= min((unsigned long long)i + smoothLevel, resY.size() - 1); j++) {
 			res += resY[j];
 		}
-		tempRes[i] = res / (double)min((smoothLevel * 2 + 1), min(i + smoothLevel + 1, resY.size() - i + smoothLevel));
+		tempRes[i] = res / (double)min((unsigned long long)(smoothLevel * 2 + 1), min((unsigned long long)i + smoothLevel + 1, resY.size() - i + smoothLevel));
 	}
 	resY.~vector();
 	resY = tempRes;

@@ -55,6 +55,7 @@ std::pair<double, double> linearAnalysis::_OLSlinaerAna(std::vector<double> &x, 
 }
 
 std::pair<double, double> linearAnalysis::linaerAna(std::vector<double> &x, std::vector<double> &y) {
+	std::cout << "Linear Analysising\n";
 	std::pair<double, double> res;
 	try {
 		res = _OLSlinaerAna(x, y);
