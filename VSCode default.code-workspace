@@ -1,24 +1,31 @@
 {
 	"folders": [
 		{
-			"path": "."
-		},
-		{
-			"path": "..\\projects"
-		},
-		{
+			"name": "amachiinori.github.io",
 			"path": "..\\amachiinori.github.io"
 		},
 		{
+			"name": "VSCode",
+			"path": "."
+		},
+		{
+			"name": "projects",
+			"path": "..\\projects"
+		},
+		{
+			"name": "SiteDemo",
 			"path": "..\\SiteDemo"
 		},
 		{
+			"name": "jekyll-theme-WuK-master",
 			"path": "..\\jekyll-theme-WuK-master"
 		},
 		{
+			"name": "Pio",
 			"path": "D:\\0-个人文件\\依赖库\\Pio"
 		},
 		{
+			"name": "THgjver1",
 			"path": "D:\\0-个人文件\\THgiproject\\THgjver1"
 		}
 	],
