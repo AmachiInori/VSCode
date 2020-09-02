@@ -140,6 +140,7 @@
 			"GetLocale",
 			"SendChatMessage"
 		],
-		"Lua.runtime.version": "Lua 5.1"
+		"Lua.runtime.version": "Lua 5.1",
+		"python.pythonPath": "D:\\Miniconda3\\python.exe"
 	}
 }
