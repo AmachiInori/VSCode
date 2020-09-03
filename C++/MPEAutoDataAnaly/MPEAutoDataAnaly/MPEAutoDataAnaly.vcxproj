@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="expr.h" />
     <ClInclude Include="functionDraw.h">
       <FileType>CppCode</FileType>
     </ClInclude>

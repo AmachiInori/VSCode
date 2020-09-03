@@ -206,11 +206,11 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 
 int funcDraw::_drawPointsWithLine() {
 	if (PointsX.size() != PointsY.size()) throw(error::_VECTOR_SIZE_NOT_EQUAL);
-	_For_each(PointsX.begin(), PointsX.end(), [this](double temp) {
+	for_each(PointsX.begin(), PointsX.end(), [this](double temp) {
 		if (XMax < temp) XMax = temp;
 		if (XMin > temp) XMin = temp;
 	});
-	_For_each(PointsY.begin(), PointsY.end(), [this](double temp) {
+	for_each(PointsY.begin(), PointsY.end(), [this](double temp) {
 		if (YMax < temp) YMax = temp;
 		if (YMin > temp) YMin = temp;
 	});

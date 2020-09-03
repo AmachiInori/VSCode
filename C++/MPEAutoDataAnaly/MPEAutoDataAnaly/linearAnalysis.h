@@ -36,15 +36,15 @@ namespace LinearError {
 
 std::pair<double, double> linearAnalysis::_OLSlinaerAna(std::vector<double> &x, std::vector<double> &y) {
 	if (x.size() != y.size()) throw LinearError::_DIFFERENT_SIZE;
-	std::_For_each(x.begin(), x.end(), [this](double temp) { 
+	std::for_each(x.begin(), x.end(), [this](double temp) { 
 		if (this->max < temp) max = temp;
 		if (this->min > temp) min = temp;
 	});
-	std::_For_each(y.begin(), y.end(), preprocess);
+	std::for_each(y.begin(), y.end(), preprocess);
 	double xSum = 0, ySum = 0, xSSum = 0, xySum = 0;
-	std::_For_each(x.begin(), x.end(), [&xSum](double temp) { xSum += temp; });
-	std::_For_each(x.begin(), x.end(), [&xSSum](double temp) { xSSum += temp * temp; });
-	std::_For_each(y.begin(), y.end(), [&ySum](double temp) { ySum += temp; });
+	std::for_each(x.begin(), x.end(), [&xSum](double temp) { xSum += temp; });
+	std::for_each(x.begin(), x.end(), [&xSSum](double temp) { xSSum += temp * temp; });
+	std::for_each(y.begin(), y.end(), [&ySum](double temp) { ySum += temp; });
 	for (int i = 0; i < x.size(); i++)
 		xySum += x[i] * y[i];
 	double xMean = xSum / x.size(), yMean = ySum / y.size(), xSMean = xSSum / x.size(), xyMean = xySum / x.size();
