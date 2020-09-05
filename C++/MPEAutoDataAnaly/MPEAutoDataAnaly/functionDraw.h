@@ -33,6 +33,8 @@ private:
 	double XMax = DBL_MIN, XMin = DBL_MAX, YMax = DBL_MIN, YMin = DBL_MAX;
 	double _unitX, _unitY, _xZero, _yZero;
 
+	bool isCompressed = false;
+
 	const static mode lineMode = 0;
 	const static mode pointMode = 1;
 	functionType _type = normal;
@@ -78,6 +80,7 @@ public:
 	void pointDraw(vector<double> &x, vector<double> &y);
 	int drawFunction(double start, double end, mode m = lineMode, preci precision = 1);
 	int drawPolarFunction(double start = 0, double end = 6.29, mode m = lineMode, preci precision = 1);
+	void compressed() { isCompressed = true; };
 };
 
 namespace error {

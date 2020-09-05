@@ -112,6 +112,8 @@ void dataInput(vector<double> &origin, string FST) {
 }
 
 int expr3() {
+	cin.clear();
+	cout << "\n-----------------------------------------------";
 	cout << "\n本子程序适用于材料物理实验:实验3 热塑性塑料熔体流动速率的测定\n";
 	vector<double> origin;
 	dataInput(origin, "weight");
@@ -132,6 +134,7 @@ int expr3() {
 }
 
 int expr2() {
+	cout << "\n-----------------------------------------------";
 	cout << "\n本子程序适用于材料物理实验:实验2  利用紫外测定聚N-异丙基丙烯酰胺的最低溶液温度\n";
 	vector<pair<double, double>> origin;
 	dataInput(origin, "T", "data");
@@ -155,7 +158,14 @@ int expr2() {
 
 	cin.get();
 	cin.get();
-	funcDraw(smoothRes.first, smoothRes.second).drawFunction(0, 0);
+	funcDraw FD(smoothRes.first, smoothRes.second);
+	FD.compressed();
+	FD.setXYComment("T/K", "Data");
+	FD.drawFunction(0, 0);
 	cin.get();
+	return 0;
+}
+
+int exprC1() {
 	return 0;
 }
