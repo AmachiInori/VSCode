@@ -3,6 +3,6 @@
 #include "expr.h"
 
 int main() {
-	expr3();
+	expr2();
 	return 0;
 }

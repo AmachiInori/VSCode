@@ -13,7 +13,7 @@ using namespace std;
 
 double defaultFunctionX(double x) { return x; }
 
-class funcDraw {
+class funcDraw { // easyXµÄÎÄµµ https://docs.easyx.cn/zh-cn/
 private:
 	typedef unsigned short mode;
 	typedef unsigned short preci;
@@ -31,7 +31,7 @@ private:
 	double zoomX = 0.3;
 	double zoomY = 0.3;
 	double XMax = DBL_MIN, XMin = DBL_MAX, YMax = DBL_MIN, YMin = DBL_MAX;
-	double _unitX, _unitY, _xZero, _yZero;
+	double _unitX = 0, _unitY = 0, _xZero = 0, _yZero = 0;
 
 	const static mode lineMode = 0;
 	const static mode pointMode = 1;
@@ -65,7 +65,7 @@ private:
 //	vector<double> parallelRunner(double(*func)(double), double start, double step, int nums);
 
 	void printComment(const double sta, const double end);
-	void drawUCS(const double ZPX, const double ZPY, const double unitX, const double unitY);
+	void drawUCS();
 
 	int _drawFunction(double start, double end, mode m, preci precision);
 	int _drawPointsWithLine();
@@ -139,7 +139,7 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 	this->calcuUnit();
 	cout << "\bdone.      \n";
 
-	this->drawUCS(_xZero, _yZero, _unitX, _unitY);
+	this->drawUCS();
 
 	cout << "Drawing... ";
 	pair<double, double> lastPair;
@@ -162,11 +162,11 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 		double xLoca = _xZero + tempXValue * _unitX;
 		double yLoca = _yZero - tempFunctionValue * _unitY;
 		if (j == 0) {
-			putpixel((int)xLoca, (int)yLoca, WHITE);
+			putpixel((int)xLoca, (int)yLoca, BLACK);
 			lastPair = { xLoca, yLoca };
 		}
 		else {
-			putpixel((int)xLoca, (int)yLoca, WHITE);
+			putpixel((int)xLoca, (int)yLoca, BLACK);
 			if (m == lineMode) line((int)xLoca, (int)yLoca, (int)lastPair.first, (int)lastPair.second);
 			slope = (yLoca - lastPair.second) / (xLoca - lastPair.first);
 			if (j != 1) {
@@ -191,11 +191,11 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 	if (willDrawPoint == true) {
 		cout << "Draw Extra Point...\n";
 		for (int i = 0; i < extraPointX.size(); i++) {
-			putpixel(int(extraPointX[i] * _unitX + _xZero), int(-extraPointY[i] * _unitY + _yZero), WHITE);
-			putpixel(int(extraPointX[i] * _unitX + _xZero) - 1, int(-extraPointY[i] * _unitY + _yZero), WHITE);
-			putpixel(int(extraPointX[i] * _unitX + _xZero), int(-extraPointY[i] * _unitY + _yZero) - 1, WHITE);
-			putpixel(int(extraPointX[i] * _unitX + _xZero) + 1, int(-extraPointY[i] * _unitY + _yZero), WHITE);
-			putpixel(int(extraPointX[i] * _unitX + _xZero), int(-extraPointY[i] * _unitY + _yZero) + 1, WHITE);
+			putpixel(int(extraPointX[i] * _unitX + _xZero), int(-extraPointY[i] * _unitY + _yZero), BLACK);
+			putpixel(int(extraPointX[i] * _unitX + _xZero) - 1, int(-extraPointY[i] * _unitY + _yZero), BLACK);
+			putpixel(int(extraPointX[i] * _unitX + _xZero), int(-extraPointY[i] * _unitY + _yZero) - 1, BLACK);
+			putpixel(int(extraPointX[i] * _unitX + _xZero) + 1, int(-extraPointY[i] * _unitY + _yZero), BLACK);
+			putpixel(int(extraPointX[i] * _unitX + _xZero), int(-extraPointY[i] * _unitY + _yZero) + 1, BLACK);
 		}
 		cout << "Done.\n";
 	}
@@ -215,7 +215,7 @@ int funcDraw::_drawPointsWithLine() {
 		if (YMin > temp) YMin = temp;
 	});
 	this->calcuUnit();
-	this->drawUCS(_xZero, _yZero, _unitX, _unitY);
+	this->drawUCS();
 	cout << "Drawing... ";
 
 	pair<double, double> lastPair;
@@ -224,7 +224,7 @@ int funcDraw::_drawPointsWithLine() {
 		double xLoca = _xZero + PointsX[i] * _unitX;
 		double yLoca = _yZero - PointsY[i] * _unitY;
 		if (i == 0) {
-			putpixel((int)xLoca, (int)yLoca, WHITE);
+			putpixel((int)xLoca, (int)yLoca, BLACK);
 			lastPair = { xLoca, yLoca };
 		}
 		else {
@@ -364,26 +364,42 @@ double funcDraw::functionRunnerY(double x) {
 	return res;
 }
 
-void funcDraw::drawUCS(const double ZPX, const double ZPY, const double unitX, const double unitY) {
+void funcDraw::drawUCS() {
 	initgraph(windowLength, windowHeight);
+	setbkcolor(WHITE);
+	cleardevice();
+	setlinecolor(BLACK);
+	setfillcolor(BLACK);
 
-	line(left, (int)ZPY, right, (int)ZPY);
-	line((int)ZPX, up, (int)ZPX, down);
-	line(right, (int)ZPY, right - 10, (int)ZPY + 5);
-	line(right, (int)ZPY, right - 10, (int)ZPY - 5);
-	line((int)ZPX + 5, up + 10, (int)ZPX, up);
-	line((int)ZPX - 5, up + 10, (int)ZPX, up);
+	line(left, (int)_yZero, right, (int)_yZero);
+	line((int)_xZero, up, (int)_xZero, down);
+	line(right, (int)_yZero, right - 10, (int)_yZero + 5);
+	line(right, (int)_yZero, right - 10, (int)_yZero - 5);
+	line((int)_xZero + 5, up + 10, (int)_xZero, up);
+	line((int)_xZero - 5, up + 10, (int)_xZero, up);
 
 	settextstyle(25, 0, (LPCTSTR)_T("Consolas"));
-	outtextxy((int)ZPX + 10, (int)ZPY + 10, (LPCTSTR)"0");
-	outtextxy(right, (int)ZPY, (LPCTSTR)"x");
-	outtextxy((int)ZPX - 20, up + 5, (LPCTSTR)"y");
+	settextcolor(BLACK);
+	outtextxy((int)_xZero + 10, (int)_yZero + 15, (LPCTSTR)"0");
+	outtextxy(right, (int)_yZero, (LPCTSTR)"x");
+	outtextxy((int)_xZero - 20, up - 5, (LPCTSTR)"y");
 
-	int Xdanwei = int(std::fmax(abs(XMax), abs(XMin)) / 5);
-	int Ydanwei = int(std::fmax(abs(YMax), abs(YMin)) / 5);
-	for (int i = 1; i <= 15; i++) {
-		line(Xdanwei * _unitX * i + _xZero, _yZero + 10, Xdanwei * _unitX * i + _xZero, _yZero - 10);
-		line(_xZero - 10, -Ydanwei * _unitY * i + _yZero, _xZero + 10, -Ydanwei * _unitY * i + _yZero);
+	int Xdanwei = max(int(std::fmax(abs(XMax), abs(XMin)) / 5), 1);
+	int Ydanwei = max(int(std::fmax(abs(YMax), abs(YMin)) / 5), 1);
+	for (int i = -15; i <= 15; i++) {
+		if (i == 0) continue;
+		if (Xdanwei * _unitX * i + _xZero < right && Xdanwei * _unitX * i + _xZero > left) {
+			line(Xdanwei * _unitX * i + _xZero, _yZero + 10, Xdanwei * _unitX * i + _xZero, _yZero - 10);
+			stringstream SS;
+			SS << Xdanwei * i;
+			outtextxy((int)Xdanwei * _unitX * i + _xZero, (int)_yZero + 15, (LPCTSTR)SS.str().data());
+		}
+		if (-Ydanwei * _unitY * i + _yZero > up && -Ydanwei * _unitY * i + _yZero < down) {
+			line(_xZero - 10, -Ydanwei * _unitY * i + _yZero, _xZero + 10, -Ydanwei * _unitY * i + _yZero);
+			stringstream SS;
+			SS << Ydanwei * i;
+			outtextxy((int)_xZero - 20, (int)-Ydanwei * _unitY * i + _yZero, (LPCTSTR)SS.str().data());
+		}
 	}
 }
 
