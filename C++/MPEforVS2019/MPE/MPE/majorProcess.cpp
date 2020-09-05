@@ -21,6 +21,7 @@ int console() {
         cout << "help  显示帮助\n";
         cout << "list  显示支持的实验列表\n";
         cout << "start [expr number]  开始指定序号的实验处理\n";
+        cout << "docu  打开官方文档(github.com)\n";
         cout << "exit  退出程序\n";
         cout << "-----------------------------------------------\n";
     };
@@ -36,16 +37,26 @@ int console() {
             cin.clear();
             getList();
         } else if (com == "start") {
+            string tempS;
+            cin >> tempS;
             int temp;
-            cin >> temp;
+            try {
+                temp = stoi(tempS);
+            } catch (std::invalid_argument) {
+                cin.clear();
+                cout << tempS << "不是有效的参数\n";
+            }
             if (temp > 0 && temp < entrance.size()) {
                 cin.clear();
                 if(entrance[temp]() == 0) cout << "进程expr" << temp << "运行完成\n";
             } else {
-                cout << temp << "不是有效的参数\n";
+                cout << tempS << "不是有效的参数\n";
             }
         } else if (com == "exit") break;
-        else {
+        else if (com == "docu") {
+            cin.clear();
+            system("start https://amachi.com.cn/_posts/2020-09-06-MPEDP%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3/");
+        } else {
             cout << '"' << com << "\"不是有效的命令\n";
         }
     }
