@@ -1,3 +1,11 @@
+/******************************* 
+functionDraw.h by AmachiInori
+open source by GPL 3.0
+
+author		AmachiInori
+ver 		2.01 
+date 		2020 09 07
+********************************/
 #ifndef _FUNCDRAW_H
 #define _FUNCDRAW_H
 #include <graphics.h>
@@ -8,10 +16,28 @@
 #include <iostream>
 #include <iomanip>
 #include <thread>
+#include <Windows.h>
+#include <ShlObj.h>
 
 using namespace std;
 
 double defaultFunctionX(double x) { return x; }
+
+string getDesktopPath(){
+    LPITEMIDLIST pidl;
+    LPMALLOC pShellMalloc;
+    char szDir[200];
+    if (SUCCEEDED(SHGetMalloc(&pShellMalloc)))
+    {
+        if (SUCCEEDED(SHGetSpecialFolderLocation(NULL, CSIDL_DESKTOP, &pidl))) {
+            SHGetPathFromIDListA(pidl, szDir);
+            pShellMalloc->Free(pidl);
+        }
+        pShellMalloc->Release();
+    }
+
+    return string(szDir);
+}
 
 class funcDraw { // easyXµÄÎÄµµ https://docs.easyx.cn/zh-cn/
 private:
@@ -45,8 +71,8 @@ private:
 
 	vector<double> extraPointX;
 	vector<double> extraPointY;
-	vector<double> PointsX;
-	vector<double> PointsY;
+	vector<vector<double>> PointsX;
+	vector<vector<double>> PointsY;
 
 	unsigned int windowHeight = 720;
 	unsigned int windowLength = 960;
@@ -57,6 +83,9 @@ private:
 
 	string XComment = string("X");
 	string YComment = string("Y");
+
+	bool willSave = false;
+	string savingPath;
 
 	double(*_functionX)(double);
 	double(*_functionY)(double);
@@ -77,8 +106,10 @@ private:
 public:
 	explicit funcDraw(double(*function)(double), unsigned int length = 960, unsigned int height = 720);
 	explicit funcDraw(double(*Xfunction)(double), double(*Yfunction)(double), unsigned int length = 960, unsigned int height = 720);
-	explicit funcDraw(vector<double> &_x, vector<double> &_y, unsigned int length = 960, unsigned int height = 720);
+	funcDraw(vector<double> &_x, vector<double> &_y, unsigned int length = 960, unsigned int height = 720);
+	funcDraw(vector<vector<double>> &_x, vector<vector<double>> &_y, unsigned int length = 960, unsigned int height = 720);
 
+	void save(string _path) { willSave = true, savingPath = _path; }
 	void compressed() { isCompressed = true; }
 	void setXYComment(string xC, string yC) { XComment = xC; YComment = yC; }
 	void pointDraw(vector<double> &x, vector<double> &y);
@@ -116,6 +147,16 @@ funcDraw::funcDraw(double(*Xfunction)(double), double(*Yfunction)(double), unsig
 }
 
 funcDraw::funcDraw(vector<double> &_x, vector<double> &_y, unsigned int length, unsigned int height)
+	: windowHeight(height), windowLength(length), PointsX({_x}), PointsY({_y}) {
+	left = windowLength / 10;
+	right = left * 9;
+	up = windowHeight / 10;
+	down = up * 9;
+	maxThread = thread::hardware_concurrency();
+	_type = point;
+}
+
+funcDraw::funcDraw(vector<vector<double>> &_x, vector<vector<double>> &_y, unsigned int length, unsigned int height) 
 	: windowHeight(height), windowLength(length), PointsX(_x), PointsY(_y) {
 	left = windowLength / 10;
 	right = left * 9;
@@ -213,36 +254,43 @@ int funcDraw::_drawFunction(double start, double end, mode m, preci precision) {
 
 int funcDraw::_drawPointsWithLine() {
 	if (PointsX.size() != PointsY.size()) throw(::error::_VECTOR_SIZE_NOT_EQUAL);
-	for_each(PointsX.begin(), PointsX.end(), [this](double temp) {
-		if (XMax < temp) XMax = temp;
-		if (XMin > temp) XMin = temp;
-	});
-	for_each(PointsY.begin(), PointsY.end(), [this](double temp) {
-		if (YMax < temp) YMax = temp;
-		if (YMin > temp) YMin = temp;
-	});
+	for (int i = 0; i < PointsX.size(); i++) {
+		if (PointsX[i].size() != PointsY[i].size()) throw(::error::_VECTOR_SIZE_NOT_EQUAL);
+		for (int j = 0; j < PointsX[i].size(); j++) {
+			if (XMax < PointsX[i][j]) XMax = PointsX[i][j];
+			if (XMin > PointsX[i][j]) XMin = PointsX[i][j];
+		}		
+		for (int j = 0; j < PointsY[i].size(); j++) {
+			if (YMax < PointsY[i][j]) YMax = PointsY[i][j];
+			if (YMin > PointsY[i][j]) YMin = PointsY[i][j];
+		}
+	}	
 	this->calcuUnit();
 	this->drawUCS();
 	cout << "Drawing... ";
 
+	vector<int> color({BLACK, BLUE, GREEN, RED, BROWN});
 	pair<double, double> lastPair;
-	
-	for (int i = 0; i < PointsX.size(); i++) {
-		double xLoca = _xZero + PointsX[i] * _unitX;
-		double yLoca = _yZero - PointsY[i] * _unitY;
-		if (isCompressed) {
-			xLoca = _xZero + 0.1 * (right - left) + (PointsX[i] - XMin) * _unitX;
-			yLoca = _yZero - 0.1 * (down - up) - (PointsY[i] - YMin) * _unitY;
-		}
-		if (i == 0) {
-			putpixel((int)xLoca, (int)yLoca, BLACK);
-			lastPair = { xLoca, yLoca };
-		}
-		else {
-			line((int)xLoca, (int)yLoca, (int)lastPair.first, (int)lastPair.second);
-			lastPair = { xLoca, yLoca };
+	for (int n = 0; n < PointsX.size(); n++) {
+		for (int i = 0; i < PointsX[n].size(); i++) {
+			double xLoca = _xZero + PointsX[n][i] * _unitX;
+			double yLoca = _yZero - PointsY[n][i] * _unitY;
+			if (isCompressed) {
+				xLoca = _xZero + 0.1 * (right - left) + (PointsX[n][i] - XMin) * _unitX;
+				yLoca = _yZero - 0.1 * (down - up) - (PointsY[n][i] - YMin) * _unitY;
+			}
+			if (i == 0) {
+				putpixel((int)xLoca, (int)yLoca, color[n]);
+				lastPair = { xLoca, yLoca };
+			}
+			else {
+				setlinecolor(color[n]);
+				line((int)xLoca, (int)yLoca, (int)lastPair.first, (int)lastPair.second);
+				lastPair = { xLoca, yLoca };
+			}
 		}
 	}
+	setlinecolor(BLACK);
 
 	if (willDrawPoint == true) {
 		cout << "Draw Extra Point...\n";
@@ -274,6 +322,11 @@ int funcDraw::_drawPointsWithLine() {
 		}
 		cout << "Done.\n";
 	}
+	if (willSave) {
+		cout << "\ngraph saved at " << savingPath << "\n";
+		saveimage((LPCTSTR)savingPath.data());
+	}
+	std::cin.get();
 	std::cin.get();
 	closegraph();
 	return 0;
@@ -410,7 +463,7 @@ void funcDraw::drawUCS() {
 	initgraph(windowLength, windowHeight);
 	setbkcolor(WHITE);
 	cleardevice();
-	setlinecolor(BLACK);
+	setlinecolor(0xAFAFAF);
 	setfillcolor(BLACK);
 
 	line(left, (int)_yZero, right, (int)_yZero);
@@ -427,41 +480,46 @@ void funcDraw::drawUCS() {
 	outtextxy((int)_xZero + 10, up - 20, (LPCTSTR)YComment.data());
 
 	if (!isCompressed) {
-		int Xdanwei = max(int(std::fmax(abs(XMax), abs(XMin)) / 5), 1);
-		int Ydanwei = max(int(std::fmax(abs(YMax), abs(YMin)) / 5), 1);
+		double Xdanwei = max(int(std::fmax(abs(XMax), abs(XMin)) / 5), 1);
+		double Ydanwei = max(int(std::fmax(abs(YMax), abs(YMin)) / 5), 1);
+		while (Xdanwei >= std::fmax(abs(XMax), abs(XMin))) Xdanwei /= 5.0;
+		while (Ydanwei >= std::fmax(abs(YMax), abs(YMin))) Ydanwei /= 5.0;
 		for (int i = -15; i <= 15; i++) {
 			if (i == 0) continue;
 			if (Xdanwei * _unitX * i + _xZero < right && Xdanwei * _unitX * i + _xZero > left) {
 				line(Xdanwei * _unitX * i + _xZero, _yZero + 10, Xdanwei * _unitX * i + _xZero, _yZero - 10);
 				stringstream SS;
-				SS << (int)Xdanwei * i;
-				outtextxy((int)Xdanwei * _unitX * i + _xZero, (int)_yZero + 15, (LPCTSTR)SS.str().data());
+				SS << setprecision(3) << Xdanwei * i;
+				outtextxy((int)(Xdanwei * _unitX * i + _xZero), (int)_yZero + 15, (LPCTSTR)SS.str().data());
 			}
 			if (-Ydanwei * _unitY * i + _yZero > up && -Ydanwei * _unitY * i + _yZero < down) {
 				line(_xZero - 10, -Ydanwei * _unitY * i + _yZero, _xZero + 10, -Ydanwei * _unitY * i + _yZero);
 				stringstream SS;
-				SS << (int)Ydanwei * i;
-				outtextxy((int)_xZero - 35, (int)-Ydanwei * _unitY * i + _yZero, (LPCTSTR)SS.str().data());
+				SS << setprecision(3) << Ydanwei * i;
+				outtextxy((int)_xZero - 55, (int)(-Ydanwei * _unitY * i + _yZero), (LPCTSTR)SS.str().data());
 			}
 		}
 	} else {
-		int Xdanwei = max((XMax - XMin) / 5, 1);
-		int Ydanwei = max((YMax - YMin) / 5, 1);
+		double Xdanwei = max((XMax - XMin) / 5, 1);
+		double Ydanwei = max((YMax - YMin) / 5, 1);
+		if (Xdanwei > int(std::fmax(abs(XMax), abs(XMin)))) Xdanwei /= 5;
+		if (Ydanwei > int(std::fmax(abs(XMax), abs(XMin)))) Ydanwei /= 5;
 		for (int i = -15; i <= 15; i++) {
 			if (Xdanwei * _unitX * i + _xZero + 0.1 * (right - left) < right && Xdanwei * _unitX * i + _xZero + 0.1 * (right - left) > left) {
 				line(Xdanwei * _unitX * i + 0.1 * (right - left) + _xZero, _yZero + 10, Xdanwei * _unitX * i + 0.1 * (right - left) + _xZero, _yZero - 10);
 				stringstream SS;
-				SS << (int)Xdanwei * i + (int)XMin;
-				outtextxy((int)Xdanwei * _unitX * i + 0.1 * (right - left) + _xZero, (int)_yZero + 15, (LPCTSTR)SS.str().data());
+				SS << setprecision(3) << Xdanwei * i + XMin;
+				outtextxy((int)(Xdanwei * _unitX * i + 0.1 * (right - left) + _xZero), (int)_yZero + 15, (LPCTSTR)SS.str().data());
 			}
 			if (-Ydanwei * _unitY * i + _yZero - 0.1 * (down - up) > up && -Ydanwei * _unitY * i + _yZero - 0.1 * (down - up) < down) {
 				line(_xZero - 10, -Ydanwei * _unitY * i + _yZero - 0.1 * (down - up), _xZero + 10, -Ydanwei * _unitY * i + _yZero - 0.1 * (down - up));
 				stringstream SS;
-				SS << (int)Ydanwei * i + (int)YMin;
-				outtextxy((int)_xZero - 35, (int)-Ydanwei * _unitY * i + _yZero - 0.1 * (down - up), (LPCTSTR)SS.str().data());
+				SS << setprecision(3) << Ydanwei * i + YMin;
+				outtextxy((int)_xZero - 55, (int)(-Ydanwei * _unitY * i + _yZero - 0.1 * (down - up)), (LPCTSTR)SS.str().data());
 			}
 		}
 	}
+	setlinecolor(BLACK);
 }
 
 void funcDraw::printComment(const double sta, const double end) {
