@@ -9,6 +9,10 @@
 			"path": "."
 		},
 		{
+			"name": "MPEforVS2019",
+			"path": "C++\\MPEforVS2019"
+		},
+		{
 			"name": "projects",
 			"path": "..\\projects"
 		},
@@ -21,16 +25,8 @@
 			"path": "..\\jekyll-theme-WuK-master"
 		},
 		{
-			"name": "MPEforVS2019",
-			"path": "C++\\MPEforVS2019"
-		},
-		{
 			"name": "Pio",
 			"path": "D:\\0-个人文件\\依赖库\\Pio"
-		},
-		{
-			"name": "THgjver1",
-			"path": "D:\\0-个人文件\\THgiproject\\THgjver1"
 		}
 	],
 	"settings": {
