@@ -5,6 +5,15 @@
         },
         {
             "path": "..\\.."
+        },
+        {
+            "path": "..\\..\\..\\MPExDataProcessing"
         }
-    ]
+    ],
+    "settings": {
+        "files.associations": {
+            "iostream": "cpp",
+            "iosfwd": "cpp"
+        }
+    }
 }
