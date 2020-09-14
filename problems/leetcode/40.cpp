@@ -27,14 +27,9 @@ public:
     vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
         sort(candidates.begin(), candidates.end());
         temp = vector<int>(candidates.size(), 0);
-        runner(candidates, target, 0);
+        runner(candidates, target, -1);
+        unique(res.begin(), res.end());
+        
         return res;
     }
 };
-
-int main() {
-    Solution s;
-    vector<int> test = {2,3,6,7};
-    s.combinationSum2(test, 7);
-    return 0;
-}

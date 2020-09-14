@@ -13,6 +13,10 @@
 			"path": "C++\\MPEforVS2019"
 		},
 		{
+			"name": "Satoru InoriComplier",
+			"path": "C++\\Satoru InoriComplier"
+		},
+		{
 			"name": "projects",
 			"path": "..\\projects"
 		},
@@ -134,7 +138,8 @@
 			"xutility": "cpp",
 			"stack": "cpp",
 			"compare": "cpp",
-			"concepts": "cpp"
+			"concepts": "cpp",
+			"resumable": "cpp"
 		},
 		"Lua.diagnostics.globals": [
 			"sum",
