@@ -45,10 +45,10 @@ C:\Users\Zhao Yufeng\Documents\VSCode\C++\MPEforVS2019\MPE\MPE\expr.hpp(278,20):
 C:\Users\Zhao Yufeng\Documents\VSCode\C++\MPEforVS2019\MPE\MPE\expr.hpp(284,20): warning C4018: “<”: 有符号/无符号不匹配
 C:\Users\Zhao Yufeng\Documents\VSCode\C++\MPEforVS2019\MPE\MPE\expr.hpp(290,20): warning C4018: “<”: 有符号/无符号不匹配
 C:\Users\Zhao Yufeng\Documents\VSCode\C++\MPEforVS2019\MPE\MPE\expr.hpp(297,20): warning C4018: “<”: 有符号/无符号不匹配
-C:\Users\Zhao Yufeng\Documents\VSCode\C++\MPEforVS2019\MPE\MPE\majorProcess.cpp(51,34): warning C4018: “<”: 有符号/无符号不匹配
+C:\Users\Zhao Yufeng\Documents\VSCode\C++\MPEforVS2019\MPE\MPE\expr.hpp(429,20): warning C4018: “<”: 有符号/无符号不匹配
+C:\Users\Zhao Yufeng\Documents\VSCode\C++\MPEforVS2019\MPE\MPE\majorProcess.cpp(52,34): warning C4018: “<”: 有符号/无符号不匹配
   正在生成代码
-  38 of 765 functions ( 5.0%) were compiled, the rest were copied from previous compilation.
-    8 functions were new in current compilation
-    45 functions had inline decision re-evaluated but remain unchanged
+  Previous IPDB not found, fall back to full compilation.
+  All 766 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   已完成代码的生成
   MPE.vcxproj -> C:\Users\Zhao Yufeng\Documents\VSCode\C++\MPEforVS2019\MPE\Release\MPE.exe

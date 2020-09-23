@@ -381,6 +381,77 @@ int expr8() {
 	return 0;
 }
 
+int expr1() {
+	cout << "\n-----------------------------------------------";
+	cout << "\n本子程序适用于材料物理实验:实验1  聚合物拉伸强度和断裂伸长率的测定";
+	cout << "\n-----------------------------------------------\n";
+	ifstream infile;
+	infile.open(getDesktopPath() + "\\0.ini");
+	while (!infile) {
+		cout << "\n未检测到完整的实验数据文档";
+		cout << "\n请在即将打开的文件夹下加入你的实验数据文档，并命名为0.ini\n";
+		cout << "\n按任意键打开文件夹";
+		cin.get();
+		string DESTCOM = "start \"\" \"" + getDesktopPath() + "\"";
+		system(DESTCOM.data());
+		cout << "\n如果已经放好，按任意键继续：";
+		cin.get();
+		infile.open(getDesktopPath() + "\\0.ini");
+	}
+	cout << "\n原始数据读取成功\n";
+	cin.get();
+	cin.get();
+	string temp;
+	double thick;
+	for (size_t i = 0; i < 7; i++) {
+		getline(infile, temp);
+	}
+	stringstream SS(temp);
+	SS >> temp >> thick;
+	while (1) {
+		getline(infile, temp);
+		if (temp == "% F,N % F,N") {
+			getline(infile, temp);
+			break;
+		}
+	}
+	vector<pair<double, double>> origin;
+	while (!infile.eof()) {
+		double tempDBLA, tempDBLB;
+		stringstream tempSS(temp);
+		tempSS >> tempDBLA >> tempDBLB;
+		origin.push_back({tempDBLA, tempDBLB});
+		tempDBLB /= thick;
+		getline(infile, temp);
+	}
+	double slp = 0;
+	double youngs = 0;
+	for (int i = 1; i < origin.size(); i++) {
+		slp = (origin[i].second - origin[i - 1].second) / (origin[i].first - origin[i - 1].first + 0.000000001);
+		if (slp <= 0 || i == origin.size() - 1) {
+			youngs = origin[i].second / origin[i].first;
+			break;
+		}
+	}
+	cout << "杨氏模量是" << youngs << "\n";
+	smooth smo(origin, 1);
+	pair<vector<double>, vector<double>> smoRes = smo.runLPSmooth(0.5);
+	funcDraw fc(smoRes.first, smoRes.second);
+	cout << "\n是否需要保存绘制的图像?(Y/N)\n";
+	cout << "请注意，请保证上次通过本子程序保存的同名文件已被转移，否则将被覆盖\n";
+	char tempC = cin.get();
+	cin.get();
+	if (tempC == 'Y' || tempC == 'y')
+		fc.save(getDesktopPath() + "\\expr1.png");
+	fc.setXYComment("%", "Mpa");
+	fc.drawFunction(1,1);
+	if (temp == "Y" || temp == "y")
+		cout << "图像保存至：" << getDesktopPath() << "\n";
+	cin.get();
+	cin.get();
+	return 0;
+}
+
 int exprC1() {
 	return 0;
 }
