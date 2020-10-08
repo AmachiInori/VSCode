@@ -66,6 +66,14 @@ int console() {
     return 0;
 }
 
+double tempF(double x) {
+    long double res = x * (0.2656 * x + (1 - x));
+    res /= (0.2656 * x * x + 2 * x * (1 - x) + 1.4503 * (1 - x) * (1 - x));
+    return res;
+}
+
 int main() {
-    return console();
+    funcDraw fz(tempF);
+    fz.drawFunction(0.00000000001, 1);
+    //    return console();
 }   
