@@ -144,7 +144,13 @@
 			"compare": "cpp",
 			"concepts": "cpp",
 			"resumable": "cpp",
-			"*.txt": "cpp"
+			"*.txt": "cpp",
+			"ami_allocate": "cpp",
+			"ami_vector": "cpp",
+			"ami_string": "cpp",
+			"ami_array": "cpp",
+			"ami_deque": "cpp",
+			"ami_matrix": "cpp"
 		},
 		"Lua.diagnostics.globals": [
 			"sum",

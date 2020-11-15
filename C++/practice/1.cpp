@@ -12,7 +12,8 @@ void printL(int nums, ...) {
 }
 
 int main(){
-	printL(5);
-	printf();
+	int b = 4;
+	int c = --b * --b * --b;
+	cout << c;
 	return 0;
 }
