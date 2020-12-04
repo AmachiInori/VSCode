@@ -7,7 +7,7 @@ private:
     bool positive = true; //不允许负零
     std::deque<uint16_t> number;
 public:
-    static const uint16_t unit_max = 10000;
+    static const uint16_t unit_max = 10000; //每四位占一个单元
 
     explicit big_int(std::string _str);
     explicit big_int(long long _num);
