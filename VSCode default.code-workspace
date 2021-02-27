@@ -150,7 +150,10 @@
 			"ami_string": "cpp",
 			"ami_array": "cpp",
 			"ami_deque": "cpp",
-			"ami_matrix": "cpp"
+			"ami_matrix": "cpp",
+			"qapplication": "cpp",
+			"qmainwindow": "cpp",
+			"variant": "cpp"
 		},
 		"Lua.diagnostics.globals": [
 			"sum",

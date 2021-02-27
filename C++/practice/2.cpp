@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 #define times 30
-#define max 10
 using namespace std;
 
 struct test {
@@ -20,5 +19,6 @@ struct test2 {
 int main() {
     std::cout << sizeof(test) << '\n';
     std::cout << sizeof(test2) << '\n';
+    max({1,2,3,4,5});
     return 0;
 }
