@@ -46,6 +46,7 @@ float etof(const std::string& _expr);
 int32_t etoi(const std::string& _expr);
 int print_token(const std::string& _expr);
 std::string get_error_info(const std::string& _expr);
+std::unordered_map<std::string, std::string>* get_macro_table();
 
 };
 
@@ -129,6 +130,10 @@ std::string get_error_info(const std::string& _expr) {
     }
     SS << " at char " << err.get_eloca();
     return SS.str();
+}
+
+std::unordered_map<std::string, std::string>* get_macro_table() {
+    return AMIC_NAMESPACE::macro_finder::get_macro_table();
 }
 
 };

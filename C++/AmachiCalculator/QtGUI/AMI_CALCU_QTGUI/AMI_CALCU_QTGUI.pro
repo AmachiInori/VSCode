@@ -17,6 +17,7 @@ HEADERS += \
     ../../src/AMI_Calcu.hpp
 
 FORMS += \
+    Macro.ui \
     mainwindow.ui
 
 # Default rules for deployment.

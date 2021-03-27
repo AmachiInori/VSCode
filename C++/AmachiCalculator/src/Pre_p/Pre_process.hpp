@@ -11,6 +11,7 @@ public:
     friend bool is_in_macro_table(const std::string &_str);
     friend std::string get_expand(const std::string &_str);
     friend void __insert_macro(const std::string &_macro, const std::string &_value);
+    static inline std::unordered_map<std::string, std::string>* get_macro_table() { return &macro_table; }
 };
 std::unordered_map<std::string, std::string> macro_finder::macro_table = {
     {"e", "(2.718281828)"}, {"pi", "(3.141592654)"}
